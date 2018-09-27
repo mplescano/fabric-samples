@@ -1,0 +1,1 @@
+chaincode -peer.address=peer1.mplescano.com:7052

@@ -1,0 +1,15 @@
+#DockerfileSetupSdksPhase1
+#mplescano/hyperledger-setup-sdks
+FROM hyperledger/fabric-baseos
+MAINTAINER mplescano@
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+ENV http_proxy=$http_proxy
+ENV https_proxy=$https_proxy
+ENV no_proxy=$no_proxy
+ADD scripts /scripts
+RUN chmod +x /scripts/setup-sdks-phase1.sh
+RUN /scripts/setup-sdks-phase1.sh
+RUN rm -rf /scripts
+CMD /bin/bash

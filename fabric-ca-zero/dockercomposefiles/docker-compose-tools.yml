@@ -1,0 +1,24 @@
+version: '3.5'
+
+networks:
+  net_tools:
+    name: net_ext_fabric-ca-zero
+
+services:
+
+  tools:
+    container_name: tools
+    image: hyperledger/fabric-tools
+    environment:
+      - GOPATH=/opt/gopath
+      - http_proxy=http://proxyprd.scotia-capital.com:8080
+      - https_proxy=http://proxyprd.scotia-capital.com:8080
+      - no_proxy=localhost,*.bns,instranetcs,intranet,127.0.0.1,192.168.*,10.*,192.168.25.128,172.22.*
+    command: /bin/bash -c 'sleep 99999'
+    volumes:
+      - ../scripts:/scripts
+      - ../data:/data
+      - /root/blockchain/fabric-samples:/opt/gopath/src/github.com/hyperledger/fabric-samples
+      - /src/github.com/hyperledger/fabric:/opt/gopath/src/github.com/hyperledger/fabric
+    networks:
+      - net_tools
