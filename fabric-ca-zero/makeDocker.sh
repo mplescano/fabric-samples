@@ -81,6 +81,35 @@ function writeStartFabric {
          COUNT=$((COUNT+1))
       done
    done
+   if [ $USE_COUCHDB == true ]; then
+      for ORG in $PEER_ORGS; do
+         COUNT=1
+         while [[ "$COUNT" -le $NUM_PEERS ]]; do
+            initPeerVars $ORG $COUNT
+            writeCouchDb
+            COUNT=$((COUNT+1))
+         done
+      done
+   fi
+}
+
+function writeCouchDb {
+# TODO
+#  couchdb2:
+#    container_name: couchdb2
+#    image: hyperledger/fabric-couchdb
+    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
+    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
+#    environment:
+#      - COUCHDB_USER=
+#      - COUCHDB_PASSWORD=
+    # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
+    # for example map it to utilize Fauxton User Interface in dev environments.
+#    ports:
+#      - "7984:5984"
+#    networks:
+#       - byfn
+  echo ""
 }
 
 # Write a service to run a fabric test including creating a channel,

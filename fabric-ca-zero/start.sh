@@ -42,7 +42,7 @@ mkdir -p ${DDIR}/logs
 ${SDIR}/makeDocker.sh
 
 # Copy stuffs
-cp -r ${SDIR}/stuff/* ${DDIR}
+cp -r ${SDIR}/stuff/*.tar.gz ${DDIR}
 
 # Create the docker containers
 log "Creating docker containers ..."

@@ -2,11 +2,14 @@
 
 set -e
 
-mkdir $HOME/developer
-cd $HOME/developer
+mkdir $HOME/developer || true
+cd $HOME/developer || true
+rm -f $HOME/developer/tutorial-network.tar.gz
+rm -Rf $HOME/developer/tutorial-network
 cp -f /data/tutorial-network.tar.gz $HOME/developer
 gunzip < tutorial-network.tar.gz | tar -xv
 cd $HOME/developer/tutorial-network
+#composer archive create --sourceType dir --sourceName . --archiveFile ./tutorial-network.bna
 composer archive create -t dir -n .
 export DEBUG=composer[debug]:*,grpc[debug]:*,verbatim[debug]:*
 composer network install --card admin-peer-org2-mplescano-com@org2mplescanocom-Client --archiveFile tutorial-network@0.0.1.bna

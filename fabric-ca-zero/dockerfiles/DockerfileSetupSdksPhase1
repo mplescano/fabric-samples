@@ -1,6 +1,6 @@
 #DockerfileSetupSdksPhase1
 #mplescano/hyperledger-setup-sdks
-FROM hyperledger/fabric-baseos
+FROM hyperledger/fabric-baseos:amd64-0.4.10
 MAINTAINER mplescano@
 ARG http_proxy
 ARG https_proxy

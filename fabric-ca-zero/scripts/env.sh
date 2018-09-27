@@ -36,6 +36,9 @@ fi
 # true or false
 CLIENT_AUTH_REQUIRED=false
 
+# true or false
+USE_COUCHDB=false
+
 #
 # The remainder of this file contains variables which typically would not be changed.
 #
