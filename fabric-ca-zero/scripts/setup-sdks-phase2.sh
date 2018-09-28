@@ -33,8 +33,6 @@ function main {
 
    su - user_composer -c '/scripts/create-composer-peer-admin-card.sh'
 
-   #su - user_composer -c '/scripts/user_composer-install-network.sh'
-
    log "Finished sdks phase 2 installation"
    touch /data/logs/setup-sdks.success
    fi

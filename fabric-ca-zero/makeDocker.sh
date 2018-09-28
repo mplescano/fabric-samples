@@ -336,6 +336,9 @@ function writePeer {
    if [ $NUM -gt 1 ]; then
       echo "      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.${ORG}:7051"
    fi
+   if [[ ! -z "${http_proxy}" ]]; then
+     echo "      - CORE_CHAINCODE_BUILDER=mplescano/fabric-proxied-ccenv:latest"
+   fi
    echo "    working_dir: $MYHOME
     command: /bin/bash -c '/scripts/start-peer.sh 2>&1 | tee /$PEER_LOGFILE; sleep 99999'
     volumes:

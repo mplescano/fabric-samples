@@ -25,7 +25,7 @@ docker tag hyperledger/fabric-baseos:amd64-0.4.10 hyperledger/fabric-baseos
 docker pull hyperledger/fabric-baseimage:amd64-0.4.10
 docker tag hyperledger/fabric-baseimage:amd64-0.4.10 hyperledger/fabric-baseimage
 if [[ ! -z "${http_proxy}" ]]; then
-  docker build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy --build-arg no_proxy=$no_proxy -f ./dockerfiles/DockerfileProxiedBaseimage -t mplescano/fabric-proxied-baseimage:amd64-0.4.10 .
+  docker build --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy --build-arg no_proxy=$no_proxy -f ./dockerfiles/DockerfileProxiedCcenv -t mplescano/fabric-proxied-ccenv:latest .
 fi
 
 #docker build 
