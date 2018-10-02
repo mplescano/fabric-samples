@@ -34,9 +34,9 @@ composer identity list -c admin-peer-org2-mplescano-com@zerotoblockchain-network
 composer network ping --card admin-peer-org2-mplescano-com@zerotoblockchain-network
 
 if [[ ! -z "${temp_http_proxy}" ]]; then
-   http_proxy=$temp_http_proxy
-   https_proxy=$temp_https_proxy
-   no_proxy=$temp_no_proxy
+   export http_proxy=$temp_http_proxy
+   export https_proxy=$temp_https_proxy
+   export no_proxy=$temp_no_proxy
 fi
 
 npm install
