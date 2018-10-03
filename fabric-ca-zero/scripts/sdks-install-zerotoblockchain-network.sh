@@ -28,8 +28,8 @@ composer network start --networkName zerotoblockchain-network --networkVersion 0
 #A temporary work around is to ACTIVATE the card yourself
 #see https://stackoverflow.com/questions/46201984/hyperledger-composer-error-the-current-identity-must-be-activated-activation
 composer card import --file ~/zerotoblockchain-network-networkadmin.card
-composer identity list -c admin-peer-org2-mplescano-com@zerotoblockchain-network
-sleep 10
+#composer identity list -c admin-peer-org2-mplescano-com@zerotoblockchain-network
+sleep 40
 composer identity list -c admin-peer-org2-mplescano-com@zerotoblockchain-network
 composer network ping --card admin-peer-org2-mplescano-com@zerotoblockchain-network
 
