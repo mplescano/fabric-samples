@@ -238,6 +238,8 @@ function makeConnProfileComposerJson {
 "
    # All peers
    # only the first peer of each org is endorser by convention here :P
+   # all the peers can emit events is up to client to choose which peer to listening. It's 
+   # important to setting at least one eventsource because it impacts the Promise of composer'apis
    for ORG in $PEER_ORGS; do
       local COUNT=1
       while [[ "$COUNT" -le $NUM_PEERS ]]; do
@@ -247,7 +249,7 @@ function makeConnProfileComposerJson {
                 \"endorsingPeer\": $(if [ $COUNT -eq 1 ]; then echo 'true'; else echo 'false'; fi),
                 \"chaincodeQuery\": $(if [ $COUNT -eq 1 ]; then echo 'true'; else echo 'false'; fi),
                 \"ledgerQuery\": true,
-                \"eventSource\": false
+                \"eventSource\": true
            }
 "
          if [ "$COUNT" -lt $NUM_PEERS ]; then
