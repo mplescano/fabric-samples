@@ -4,11 +4,12 @@ set -e
 
 mkdir $HOME/developer || true
 cd $HOME/developer || true
-rm -f $HOME/developer/tutorial-network.tar.gz
+#rm -f $HOME/developer/tutorial-network.tar.gz
 rm -Rf $HOME/developer/tutorial-network
-cp -f /data/tutorial-network.tar.gz $HOME/developer
-gunzip < tutorial-network.tar.gz | tar -xv
+cp -rf /stuff/tutorial-network $HOME/developer
+cp -f /stuff/node_modules.tar.gz $HOME/developer/tutorial-network
 cd $HOME/developer/tutorial-network
+gunzip < node_modules.tar.gz | tar -xv
 #composer archive create --sourceType dir --sourceName . --archiveFile ./tutorial-network.bna
 composer archive create -t dir -n .
 

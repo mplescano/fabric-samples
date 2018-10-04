@@ -4,12 +4,12 @@ set -e
 
 mkdir $HOME/developer || true
 cd $HOME/developer || true
-rm -Rf $HOME/developer/zerotoblockchain-network
-rm -Rf $HOME/developer/zerotoblockchain-network.tar.gz
-cp -f /data/zerotoblockchain-network.tar.gz $HOME/developer
-gunzip < zerotoblockchain-network.tar.gz | tar -xv
+rm -Rf $HOME/developer/zerotoblockchain-network || true
+cp -rf /stuff/zerotoblockchain-network $HOME/developer
+cp -f /stuff/node_modules.tar.gz $HOME/developer/zerotoblockchain-network
 cd $HOME/developer/zerotoblockchain-network
-rm -Rf dist/
+gunzip < node_modules.tar.gz | tar -xv
+rm -f node_modules.tar.gz
 #composer archive create --sourceType dir --sourceName . --archiveFile ./tutorial-network.bna
 composer archive create -t dir -n .
 
@@ -29,7 +29,7 @@ composer network start --networkName zerotoblockchain-network --networkVersion 0
 #see https://stackoverflow.com/questions/46201984/hyperledger-composer-error-the-current-identity-must-be-activated-activation
 composer card import --file ~/zerotoblockchain-network-networkadmin.card
 #composer identity list -c admin-peer-org2-mplescano-com@zerotoblockchain-network
-sleep 40
+sleep 60
 composer identity list -c admin-peer-org2-mplescano-com@zerotoblockchain-network
 composer network ping --card admin-peer-org2-mplescano-com@zerotoblockchain-network
 

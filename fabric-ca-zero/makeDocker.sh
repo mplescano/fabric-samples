@@ -191,6 +191,7 @@ function writeSetupSdks {
    echo "
     command: /bin/bash -c 'sleep 3;/scripts/setup-sdks-phase2.sh 2>&1 | tee /$SDKS_LOGFILE; sleep 99999'
     volumes:
+      - ./stuff:/stuff
       - ./scripts:/scripts
       - ./$DATA:/$DATA
       - ${SAMPLES_DIR}:/opt/gopath/src/github.com/hyperledger/fabric-samples

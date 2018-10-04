@@ -41,9 +41,6 @@ mkdir -p ${DDIR}/logs
 # Create the docker-compose file
 ${SDIR}/makeDocker.sh
 
-# Copy stuffs
-cp -r ${SDIR}/stuff/*.tar.gz ${DDIR}
-
 # Create the docker containers
 log "Creating docker containers ..."
 docker-compose up -d

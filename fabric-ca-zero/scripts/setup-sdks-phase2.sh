@@ -30,6 +30,7 @@ function main {
    #chmod 0440 /etc/sudoers.d/user_composer
    #usermod -a -G root user_composer
    setfacl -m g:user_composer:rx -R /data/orgs
+   setfacl -m g:user_composer:rx -R /stuff
 
    su - user_composer -c '/scripts/create-composer-peer-admin-card.sh'
 
@@ -238,7 +239,7 @@ function makeConnProfileComposerJson {
 "
    # All peers
    # only the first peer of each org is endorser by convention here :P
-   # all the peers can emit events is up to client to choose which peer to listening. It's 
+   # all the peers can emit events but it is up to client to choose which peer to listening. It's 
    # important to setting at least one eventsource because it impacts the Promise of composer'apis
    for ORG in $PEER_ORGS; do
       local COUNT=1
