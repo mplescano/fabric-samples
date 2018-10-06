@@ -42,7 +42,7 @@ function loadAdminUX ()
 function wsDisplay(_target, _port)
 {
     let content = $('#'+_target);
-    let wsSocket = new WebSocket('ws://localhost:'+_port);
+    let wsSocket = new WebSocket('ws://' + location.hostname + ':'+_port);
     wsSocket.onopen = function () {wsSocket.send('connected to client');};
     wsSocket.onmessage = function (message) {content.append(formatMessage(message.data));};
     wsSocket.onerror = function (error) {console.log('WebSocket error on wsSocket: ' + error);};
@@ -735,7 +735,7 @@ function getChainEvents()
     $.when($.get('fabric/getChainEvents')).done(function(_res)
     { let _str = '<h2> Get Chain events requested. Sending to port: '+_res.port+'</h2>';
         let content = $('#blockchain');
-        let csSocket = new WebSocket('ws://localhost:'+_res.port);
+        let csSocket = new WebSocket('ws://'+location.hostname+':'+_res.port);
         csSocket.onopen = function () {csSocket.send('connected to client');};
         csSocket.onmessage = function (message) {
             _blctr ++;
