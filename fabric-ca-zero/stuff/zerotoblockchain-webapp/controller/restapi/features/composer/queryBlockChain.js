@@ -58,6 +58,14 @@ exports.getChainInfo = function(req, res, next) {
         return hfc.newDefaultKeyValueStore({ path: wallet_path })
         .then((wallet) => {
             client.setStateStore(wallet);
+
+            var crypto_suite = hfc.newCryptoSuite();
+            // use the same location for the state store (where the users' certificate are kept)
+            // and the crypto store (where the users' keys are kept)
+            var crypto_store = hfc.newCryptoKeyStore({path: wallet_path});
+            crypto_suite.setCryptoKeyStore(crypto_store);
+            client.setCryptoSuite(crypto_suite);
+            
             // change PeerAdmin in following line to adminID
             return client.getUserContext(config.composer.PeerAdmin, true);})
             .then((user) => {
