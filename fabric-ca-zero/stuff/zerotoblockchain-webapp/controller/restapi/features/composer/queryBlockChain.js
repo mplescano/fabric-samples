@@ -108,13 +108,13 @@ exports.getChainEvents = function(req, res, next) {
                 return client.getUserContext(config.composer.PeerAdmin, true);})
                 .then((user) => {
                     if (user === null || user === undefined || user.isEnrolled() === false) 
-                        {console.error("User not defined, or not enrolled - error");}
+                        {console.error("User not defined, or not enrolled - error"); return;}
                         channel = client.newChannel(config.fabric.channelName);
                         channel.addPeer(client.newPeer(config.fabric.peerRequestURL));
                         channel.addOrderer(client.newOrderer(config.fabric.ordererURL)); 
                         // change Admin in following line to admin
-                        var pemPath = path.join(__dirname,'creds','admin@org.hyperledger.composer.system-cert.pem');
-                        var adminPEM = fs.readFileSync(pemPath).toString();
+                        var pemPath = path.join(__dirname,'creds','admin-peer-org2-mplescano-com');
+                        var adminPEM = JSON.parse(fs.readFileSync(pemPath)).certificate;
                         var bcEvents = new hfcEH(client);
                         bcEvents.setPeerAddr(config.fabric.peerEventURL, {pem: adminPEM});
                         bcEvents.connect();
