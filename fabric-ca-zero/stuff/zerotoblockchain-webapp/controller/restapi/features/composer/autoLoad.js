@@ -128,7 +128,7 @@ exports.autoLoad = function(req, res, next) {
                                 // return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].pw)
                                 // V0.15
                                 console.log('issuing identity for: '+config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id);
-                                return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].id)
+                                return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].id, {affiliation:"org2.mplescano.com"})
                                 .then((result) => {
                                     console.log('_arr[_idx].id: '+_arr[_idx].id);
                                     console.log('result.userID: '+result.userID);
@@ -152,7 +152,7 @@ exports.autoLoad = function(req, res, next) {
                                         });
                                 })
                                 .catch((error) => {
-                                    console.error('create id for '+_arr[_idx].id+'failed. ',error.message);
+                                    console.error('create id for '+_arr[_idx].id+' failed. ',error.message);
                                 });
                             })
                         .catch((error) => {console.log(_arr[_idx].companyName+' add failed',error.message);});
