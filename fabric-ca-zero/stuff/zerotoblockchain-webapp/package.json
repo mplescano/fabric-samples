@@ -87,6 +87,7 @@
     "express": "^4.15.4",
     "express-session": "^1.15.5",
     "fabric-client": "^1.2.2",
+    "fabric-ca-client": "^1.2.2",
     "fs": "0.0.1-security",
     "http": "0.0.0",
     "https": "^1.0.0",

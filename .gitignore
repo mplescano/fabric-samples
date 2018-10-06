@@ -10,3 +10,5 @@
 .DS_Store
 .project
 fabric-ca-zero-v*.tar.gz
+fabric-ca-zero/stuff/zerotoblockchain-webapp/node_modules/
+fabric-ca-zero/stuff/zerotoblockchain-webapp/package-lock.json
