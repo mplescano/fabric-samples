@@ -72,6 +72,7 @@ exports.getPort = function(req, res, next) {
  * @function
  */
 exports.autoLoad = function(req, res, next) {
+    let arrMemberPromises = [];
     // get the autoload file
     let newFile = path.join(path.dirname(require.main.filename),'startup','memberList.json');
     let startupFile = JSON.parse(fs.readFileSync(newFile));
@@ -100,7 +101,8 @@ exports.autoLoad = function(req, res, next) {
             // them. This generates the memberList.txt file later used for
             // retrieving member secrets.
             for (let each in startupFile.members)
-                {(function(_idx, _arr)
+            {
+                let memberPromise = (function(_idx, _arr)
                     {
                     // the participant registry is where member information is first stored
                     // there are individual registries for each type of participant, or member.
@@ -115,7 +117,7 @@ exports.autoLoad = function(req, res, next) {
                         .catch((error) => {
                             participant = factory.newResource(config.composer.NS, _arr[_idx].type, _arr[_idx].id);
                             participant.companyName = _arr[_idx].companyName;
-                            participantRegistry.add(participant)
+                            return participantRegistry.add(participant)
                             .then(() => {
                                 console.log('['+_idx+'] '+_arr[_idx].companyName+' successfully added');
                                 svc.m_connection.sendUTF('['+_idx+'] '+_arr[_idx].companyName+' successfully added');
@@ -158,11 +160,15 @@ exports.autoLoad = function(req, res, next) {
                     })
                 .catch((error) => {console.log('error with getParticipantRegistry', error.message);});
                 })(each, startupFile.members);
+
+                arrMemberPromises.push(memberPromise);
             }
             // iterate through the order objects in the memberList.json file.
             for (let each in startupFile.items){(function(_idx, _arr){itemTable.push(_arr[_idx]);})(each, startupFile.items);}
             svc.saveItemTable(itemTable);
-            for (let each in startupFile.assets)
+
+            Promise.all(arrMemberPromises).then(function(values) {
+                for (let each in startupFile.assets)
                 {(function(_idx, _arr)
                     {
                     // each type of asset, like each member, gets it's own registry. Our application
@@ -214,8 +220,9 @@ exports.autoLoad = function(req, res, next) {
                         });
                     })
                     .catch((error) => {console.log('error with getParticipantRegistry', error.message);});
-                })(each, startupFile.assets);
-            }
+                    })(each, startupFile.assets);
+                }
+            });
         })
     .catch((error) => {console.log('error with business network Connect', error.message);});
     })
