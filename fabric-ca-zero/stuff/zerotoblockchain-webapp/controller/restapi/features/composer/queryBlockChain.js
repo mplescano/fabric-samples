@@ -104,19 +104,32 @@ exports.getChainEvents = function(req, res, next) {
             return hfc.newDefaultKeyValueStore({ path: wallet_path })
             .then((wallet) => {
                 client.setStateStore(wallet);
+
+                var crypto_suite = hfc.newCryptoSuite();
+                // use the same location for the state store (where the users' certificate are kept)
+                // and the crypto store (where the users' keys are kept)
+                var crypto_store = hfc.newCryptoKeyStore({path: wallet_path});
+                crypto_suite.setCryptoKeyStore(crypto_store);
+                client.setCryptoSuite(crypto_suite);
+
                 // change PeerAdmin in following line to adminID
                 return client.getUserContext(config.composer.PeerAdmin, true);})
                 .then((user) => {
                     if (user === null || user === undefined || user.isEnrolled() === false) 
                         {console.error("User not defined, or not enrolled - error"); return;}
+
+
                         channel = client.newChannel(config.fabric.channelName);
-                        channel.addPeer(client.newPeer(config.fabric.peerRequestURL));
+                        var peer = client.newPeer(config.fabric.peerRequestURL);
+                        channel.addPeer(peer);
                         channel.addOrderer(client.newOrderer(config.fabric.ordererURL)); 
                         // change Admin in following line to admin
                         var pemPath = path.join(__dirname,'creds','admin-peer-org2-mplescano-com');
                         var adminPEM = JSON.parse(fs.readFileSync(pemPath)).certificate;
-                        var bcEvents = new hfcEH(client);
-                        bcEvents.setPeerAddr(config.fabric.peerEventURL, {pem: adminPEM});
+
+                        //var bcEvents = new hfcEH(client);
+                        //bcEvents.setPeerAddr(config.fabric.peerEventURL, {pem: adminPEM});
+                        var bcEvents = channel.newChannelEventHub(peer);
                         bcEvents.connect();
                         svc.createChainSocket();
                         bcEvents.registerBlockEvent(function(event) {svc.cs_connection.sendUTF(JSON.stringify(event));});
