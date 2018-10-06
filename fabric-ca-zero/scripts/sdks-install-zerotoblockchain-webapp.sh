@@ -22,4 +22,6 @@ if [[ ! -z "${http_proxy}" ]]; then
    unset no_proxy
 fi
 
+node enrollAdmin
+
 node index

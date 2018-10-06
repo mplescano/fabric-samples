@@ -57,7 +57,7 @@ Fabric_Client.newDefaultKeyValueStore({ path: store_path
           console.log('Successfully enrolled admin user "admin-peer-org2-mplescano-com"');
           return fabric_client.createUser(
               {username: 'admin-peer-org2-mplescano-com',
-                  mspid: 'Org1MSP',
+                  mspid: 'peerorg2.mplescano.comMSP',
                   cryptoContent: { privateKeyPEM: enrollment.key.toBytes(), signedCertPEM: enrollment.certificate }
               });
         }).then((user) => {
