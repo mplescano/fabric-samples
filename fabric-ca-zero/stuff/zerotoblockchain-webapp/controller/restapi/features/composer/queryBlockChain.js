@@ -65,7 +65,7 @@ exports.getChainInfo = function(req, res, next) {
             var crypto_store = hfc.newCryptoKeyStore({path: wallet_path});
             crypto_suite.setCryptoKeyStore(crypto_store);
             client.setCryptoSuite(crypto_suite);
-            
+
             // change PeerAdmin in following line to adminID
             return client.getUserContext(config.composer.PeerAdmin, true);})
             .then((user) => {
@@ -125,12 +125,14 @@ exports.getChainEvents = function(req, res, next) {
                 .then((user) => {
                     if (user === null || user === undefined || user.isEnrolled() === false) 
                         {console.error("User not defined, or not enrolled - error"); return;}
-
+                        const homedir = require('os').homedir();
+                        var pemOrdererPath = path.join(homedir, 'cacertscomposer', 'admin', 'msp', 'cacerts', 'rca-org1-mplescano-com-7054.pem');
+                        var pemOrderer = fs.readFileSync(pemOrdererPath).toString();
 
                         channel = client.newChannel(config.fabric.channelName);
                         var peer = client.newPeer(config.fabric.peerRequestURL);
                         channel.addPeer(peer);
-                        channel.addOrderer(client.newOrderer(config.fabric.ordererURL)); 
+                        channel.addOrderer(client.newOrderer(config.fabric.ordererURL, {'pem': pemOrderer})); 
                         // change Admin in following line to admin
                         var pemPath = path.join(__dirname,'creds','admin-peer-org2-mplescano-com');
                         var adminPEM = JSON.parse(fs.readFileSync(pemPath)).certificate;
