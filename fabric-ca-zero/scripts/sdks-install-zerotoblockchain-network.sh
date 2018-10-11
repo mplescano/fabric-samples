@@ -23,7 +23,7 @@ if [[ ! -z "${http_proxy}" ]]; then
 fi
 
 export DEBUG=composer[debug]:*,grpc[debug]:*,verbatim[debug]:*
-composer network install --card admin-peer-org2-mplescano-com@org2mplescanocom-Client --archiveFile zerotoblockchain-network@0.1.5.bna
+composer network install --card admin-peer-org2-mplescano-com@org2mplescanocom-Client --archiveFile zerotoblockchain-network@0.1.5.bna -o affiliation=org2.mplescano.com
 composer network start --networkName zerotoblockchain-network --networkVersion 0.1.5 --networkAdmin admin-peer-org2-mplescano-com --networkAdminEnrollSecret admin-peer-org2-mplescano-compw --card admin-peer-org2-mplescano-com@org2mplescanocom-Client --file ~/zerotoblockchain-network-networkadmin.card
 #A temporary work around is to ACTIVATE the card yourself
 #see https://stackoverflow.com/questions/46201984/hyperledger-composer-error-the-current-identity-must-be-activated-activation
