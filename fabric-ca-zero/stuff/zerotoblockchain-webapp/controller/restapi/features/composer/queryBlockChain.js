@@ -21,7 +21,7 @@ const appEnv = cfenv.getAppEnv();
 app.set('port', appEnv.port);
 
 const hfc = require('fabric-client');
-const hfcEH = require('fabric-client/lib/EventHub');
+//const hfcEH = require('fabric-client/lib/EventHub');
 
 const svc = require('./Z2B_Services');
 const util = require('./Z2B_Utilities');
