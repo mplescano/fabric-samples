@@ -301,7 +301,19 @@ exports.listAsAdmin = function(req, res, next) {
     console.log('config.composer.PeerCard: '+config.composer.PeerCard);
     adminConnection.connect(config.composer.PeerCard)
     .then(function(){
-        // ========> Your Code Goes Here <=========
+        adminConnection.list()
+            .then(businessNetworks => {
+                // Connection has been tested
+                businessNetworks.forEach(itemBusinessNetwork => {
+                    console.log('Deployed business network:', itemBusinessNetwork);
+                });
+                res.send(businessNetworks);
+            })
+            .catch(function(_error) {
+                let error = _error;
+                console.log('Get business network failed:', error);
+                res.send(error);
+            });
     });
 };
 /**

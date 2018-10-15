@@ -52,9 +52,9 @@ app.use(bodyParser.json());
 app.set('appName', 'z2b-chapter05');
 app.set('port', appEnv.port);
 
-app.set('views', path.join(__dirname + '/HTML'));
-app.engine('html', require('ejs').renderFile);
-app.set('view engine', 'ejs');
+//app.set('views', path.join(__dirname + '/HTML'));
+//app.engine('html', require('ejs').renderFile);
+//app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/HTML'));
 app.use(bodyParser.json());
 
