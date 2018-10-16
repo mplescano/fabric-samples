@@ -366,7 +366,7 @@ exports.undeploy = function(req, res, next) {
             })
             .catch(function(error) {
                 let _error = error;
-                console.log(req.body.businessNetwork + ' network undeploy failed');
+                console.log(req.body.businessNetwork + ' network undeploy failed: ' + _error.toString());
                 res.send({undeploy: _error.toString()});
             });
     });
