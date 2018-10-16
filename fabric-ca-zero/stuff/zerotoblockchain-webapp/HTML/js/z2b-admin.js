@@ -240,7 +240,14 @@ function ping()
     $.when($.post('/composer/admin/ping', options)).done(function (_results)
     {
         let _str = '';
-        // ========> Your Code Goes Here <=========
+        _str += '<h2>Network ping request to ' + businessNetwork + '</h2>';
+        _str += '<h4>Ping request result:</h4><table width="90%"><tr><th>Item</th><th width="65%">Value</th></tr>';
+        for (let each in _results.ping) {
+            (function (_idx, _arr) {
+                _str += '<tr><td>' + _idx + '</td><td>' + _arr[_idx] + '</td></tr>';
+            })(each, _results.ping);
+        }
+        _str+='</table>';
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
     });
@@ -258,8 +265,9 @@ function networkUndeploy()
         $.when($.post('/composer/admin/undeploy', options)).done(function(_results)
         {
             let _str = '';
-        // ========> Your Code Goes Here <=========
-        $('#admin-forms').empty();
+            _str += '<h2>Network undeploy request for ' + businessNetwork + '</h2>';
+            _str += '<h4>Network undeploy request result: ' + _results.undeploy + '</h4>';
+            $('#admin-forms').empty();
             $('#admin-forms').append(_str);
         });
     } else
