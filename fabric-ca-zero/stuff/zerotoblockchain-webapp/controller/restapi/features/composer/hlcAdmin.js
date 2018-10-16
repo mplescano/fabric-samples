@@ -331,7 +331,16 @@ exports.ping = function(req, res, next) {
     // connection in v0.15
     adminConnection.connect(config.composer.adminCard)
     .then(function(){
-        // ========> Your Code Goes Here <=========
+        adminConnection.ping()
+            .then(function(result) {
+                console.log('Network ping successful:', result);
+                res.send({ping: result});
+            })
+            .catch(function(error) {
+                let _error = error;
+                console.log('Network ping failed:', _error);
+                res.send({ping: _error.toString()});
+            });
     });
 };
 /**
@@ -350,7 +359,16 @@ exports.undeploy = function(req, res, next) {
     // connection in v0.15
     adminConnection.connect(config.composer.adminCard)
     .then(function(){
-        // ========> Your Code Goes Here <=========
+        adminConnection.undeploy(req.body.businessNetwork)
+            .then(function(result) {
+                console.log(req.body.businessNetwork + ' network undeploy successfuly');
+                res.send({undeploy: req.body.businessNetwork + ' network undeploy successfuly'});
+            })
+            .catch(function(error) {
+                let _error = error;
+                console.log(req.body.businessNetwork + ' network undeploy failed');
+                res.send({undeploy: _error.toString()});
+            });
     });
 };
 /**
