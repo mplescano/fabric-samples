@@ -128,7 +128,7 @@ exports.autoLoad = function(req, res, next) {
                                 // return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].pw)
                                 // V0.15
                                 console.log('issuing identity for: '+config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id);
-                                return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].id, {affiliation:"org2.mplescano.com"})
+                                return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].id, {affiliation: config.composer.affiliation})
                                 .then((result) => {
                                     console.log('_arr[_idx].id: '+_arr[_idx].id);
                                     console.log('result.userID: '+result.userID);

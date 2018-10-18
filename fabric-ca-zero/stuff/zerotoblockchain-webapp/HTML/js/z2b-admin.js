@@ -167,13 +167,14 @@ function networkDeploy()
 {
     let options = {};
     options.myArchive = networkFile;
-    $.when($.post('/composer/admin/deploy', options)).done(function (_results)
+    /*$.when($.post('/composer/admin/deploy', options)).done(function (_results)
     { 
         let _str = '';
         // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
-    });
+    });*/
+    alert('Deploy api doesn\'t exist...');
 }
 
 /**
@@ -183,13 +184,14 @@ function networkInstall()
 {
     let options = {};
     options.myArchive = networkFile;
-    $.when($.post('/composer/admin/install', options)).done(function (_results)
+    /*$.when($.post('/composer/admin/install', options)).done(function (_results)
     { 
         let _str = '';
         // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
-    });
+    });*/
+    alert('it needs more work...');
 }
 
 /**
@@ -199,12 +201,13 @@ function networkStart()
 {
     let options = {};
     options.myArchive = networkName;
-    $.when($.post('/composer/admin/start', options)).done(function (_results)
+    /*$.when($.post('/composer/admin/start', options)).done(function (_results)
     { 
         // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
-    });
+    });*/
+    alert('it needs more work...');
 }
 
 /**
@@ -260,7 +263,7 @@ function networkUndeploy()
 {
     let options = {};
     options.businessNetwork = businessNetwork;
-    if (confirm('Are you sure you want to undeploy the '+businessNetwork+' business network?') === true)
+    /*if (confirm('Are you sure you want to undeploy the '+businessNetwork+' business network?') === true)
     {
         $.when($.post('/composer/admin/undeploy', options)).done(function(_results)
         {
@@ -274,7 +277,8 @@ function networkUndeploy()
     {
         $('#message').empty();
         $('#message').append('undeploy request cancelled');
-    }
+    }*/
+    alert('you cannot undeploy, only upgrade existing networks...');
 }
 
 /**
@@ -284,13 +288,14 @@ function networkUpdate()
 {
     let options = {};
     options.myArchive = networkFile;
-    $.when($.post('/composer/admin/update', options)).done(function (_results)
+    /*$.when($.post('/composer/admin/update', options)).done(function (_results)
     { 
         let _str = '';
         // ========> Your Code Goes Here <=========
         $('#admin-forms').empty();
         $('#admin-forms').append(_str);
-    });
+    });*/
+    alert('it needs more work...');
 }
 
 /**
