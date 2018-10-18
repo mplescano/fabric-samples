@@ -200,7 +200,7 @@ function networkInstall()
 function networkStart()
 {
     let options = {};
-    options.myArchive = networkName;
+    options.myArchive = businessNetwork;
     /*$.when($.post('/composer/admin/start', options)).done(function (_results)
     { 
         // ========> Your Code Goes Here <=========
