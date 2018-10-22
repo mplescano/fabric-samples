@@ -456,15 +456,51 @@ exports.getMembers = function(req, res, next) {
     // connection in v0.15
     return businessNetworkConnection.connect(config.composer.adminCard)
         .then(() => {
-            return businessNetworkConnection.getParticipantRegistry(NS+'.'+req.body.registry)
+            return businessNetworkConnection.getParticipantRegistry(NS + '.' + req.body.registry)
             .then(function(registry){
-        // ========> Your Code Goes Here <=========
-    })
-        .catch((error) => {console.log('error with getRegistry', error);
-            res.send({'result': 'failed '+error.message, 'members': []});});
+                return registry.getAll()
+                    .then((members) => {
+                        for (let each in members) {
+                            (function (_idx, _arr) {
+                                let _jsn = {};
+                                _jsn.type = req.body.registry;
+                                _jsn.companyName = _arr[_idx].companyName;
+                                switch (req.body.registry) {
+                                    case 'Buyer':
+                                        _jsn.id = _arr[_idx].buyerID;
+                                    break;
+                                    case 'Seller':
+                                        _jsn.id = _arr[_idx].sellerID;
+                                    break;
+                                    case 'Provider':
+                                        _jsn.id = _arr[_idx].providerID;
+                                    break;
+                                    case 'Shipper':
+                                        _jsn.id = _arr[_idx].shipperID;
+                                    break;
+                                    case 'FinanceCo':
+                                        _jsn.id = _arr[_idx].financeCoID;
+                                    break;
+                                    default:
+                                        _jsn.id = _arr[_idx].id;
+                                }
+                                allMembers.push(_jsn);
+                            })(each, members);
+                        }
+                        res.send({'result': 'success', 'members': allMembers});
+                    })
+                    .catch((error) => {
+                        console.log('Error with getAllMembers', error);
+                        res.send({'result': 'failed' + error.message, 'members': []});
+                    });
+            })
+            .catch((error) => {console.log('error with getRegistry', error);
+                res.send({'result': 'failed '+error.message, 'members': []});
+            });
         })
         .catch((error) => {console.log('error with business network Connect', error.message);
-            res.send({'result': 'failed '+error.message, 'members': []});});
+            res.send({'result': 'failed '+error.message, 'members': []});
+        });
 };
 
 /**
