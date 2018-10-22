@@ -590,7 +590,8 @@ exports.getAssets = function(req, res, next) {
     let allOrders = new Array();
     let businessNetworkConnection;
     let serializer;
-    let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network','dist','zerotoblockchain-network.bna'));
+    //let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network','dist','zerotoblockchain-network.bna'));
+    let archiveFile = fs.readFileSync(path.join(_home, config.composer.archiveBnaFile));
     businessNetworkConnection = new BusinessNetworkConnection();
     return BusinessNetworkDefinition.fromArchive(archiveFile)
     .then((bnd) => {
