@@ -586,7 +586,7 @@ function removeMember()
 {
     let options = {};
     let member_list;
-    options.registry = $('#registryName2').find(':selected').text();
+    options.registry = $('#registryName5').find(':selected').text();
     $('#admin-forms').empty();
     $('#messages').empty();
     $('#messages').append(formatMessage('Getting Member List for '+options.registry+'.'));
