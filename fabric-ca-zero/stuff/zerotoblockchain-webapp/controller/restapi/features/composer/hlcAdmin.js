@@ -683,10 +683,28 @@ exports.addMember = function(req, res, next) {
     .then(() => {
         factory = businessNetworkConnection.getBusinessNetwork().getFactory();
         return businessNetworkConnection.getParticipantRegistry(NS+'.'+req.body.type)
-        .then(function(participantRegistry){
-        // ========> Your Code Goes Here <=========
-    })
-        .catch((error) => {console.log('error with getParticipantRegistry', error); res.send(error);});
+        .then(function(participantRegistry) {
+            return participantRegistry.get(req.body.id)
+            .then((_res) => {
+                res.send('Member already added. Add cancelled.');
+            })
+            .catch((_error) => {
+                console.log(req.body.id + ' not in ' + req.body.type + ' registry. ');
+                let participant = factory.newResource(NS, req.body.type, req.body.id);
+                participant.companyName = req.body.companyName;
+                participantRegistry.add(participant)
+                .then(() => {
+                    console.log(req.body.companyName + ' successfully added.');
+                    res.send(req.body.companyName + ' successfully added.');
+                })
+                .catch((_error) => {
+                    console.log(req.body.companyName + ' add failed.', _error);
+                });
+            });
+        })
+        .catch((error) => {
+            console.log('error with getParticipantRegistry', error); res.send(error);
+        });
     })
     .catch((error) => {console.log('error with businessNetworkConnection', error); res.send(error);});
 };
@@ -713,8 +731,14 @@ exports.removeMember = function(req, res, next) {
         .then(function(participantRegistry){
             return participantRegistry.get(req.body.id)
             .then((_res) => {
-        // ========> Your Code Goes Here <=========
-    })
+                return participantRegistry.remove(req.body.id)
+                .then((_res) => {
+                    res.send('Member id ' + req.body.id + ' successfully removed from the ' + req.body.registry + ' member registry.');
+                })
+                .catch((_error) => {
+                    res.send('Member id ' + req.body.id + ' failed to remove:' + _error.toString());
+                });
+            })
             .catch((_res) => { res.send('member id '+req.body.id+' does not exist in the '+req.body.registry+' member registry.');});
         })
         .catch((error) => {console.log('error with getParticipantRegistry', error); res.send(error.message);});
