@@ -785,7 +785,8 @@ exports.getHistory = function(req, res, next) {
     let allHistory = new Array();
     let businessNetworkConnection;
     let ser;
-    let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network','dist','zerotoblockchain-network.bna'));
+    //let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network','dist','zerotoblockchain-network.bna'));
+    let archiveFile = fs.readFileSync(path.join(_home, config.composer.archiveBnaFile));
     return BusinessNetworkDefinition.fromArchive(archiveFile)
     .then((bnd) => {
         ser = bnd.getSerializer();
