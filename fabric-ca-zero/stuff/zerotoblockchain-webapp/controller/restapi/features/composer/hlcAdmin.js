@@ -516,7 +516,14 @@ exports.checkCard = function(req, res, next) {
     let adminConnection = new AdminConnection();
     adminConnection.connect(config.composer.adminCard)
     .then(() => {
-        // ========> Your Code Goes Here <=========
+        adminConnection.hasCard(req.body.id)
+        .then((_res) => {
+            let cardState = ((_res) ? 'Exists' : 'Does not exist')
+            res.send({'result': 'success', 'card': cardState});
+        })
+        .catch((_error) => {
+            res.send({'result': 'failed', 'message': _error.message});
+        });
     })
     .catch((error) => {
         res.send({'result': 'admin Connect failed', 'message': error.message});
@@ -541,11 +548,20 @@ exports.createCard = function(req, res, next) {
     _meta.businessNetwork = config.composer.network;
     _meta.userName = req.body.id;
     _meta.enrollmentSecret = req.body.secret;
-    config.connectionProfile.keyValStore = _home+config.connectionProfile.keyValStore;
+    config.connectionProfile.keyValStore = _home + config.connectionProfile.keyValStore;
     let tempCard = new hlc_idCard(_meta, config.connectionProfile);
     adminConnection.connect(config.composer.adminCard)
     .then(() => {
-        // ========> Your Code Goes Here <=========
+        return adminConnection.importCard(req.body.id, tempCard)
+        .then((_res) => {
+            let _msg = ((_res) ? 'Card updated' : 'Card imported');
+            console.log('Created  Card successed:' + _msg);
+            res.send({'result': 'success', 'card': _msg});
+        })
+        .catch((_error) => {
+            console.log('adminConnection.importCard failed.', _error.message);
+            res.send({'result': 'failed', 'error': _error.message});
+        });
     })
     .catch((error) => {
         console.error('adminConnection.connect failed. ',error.message);
