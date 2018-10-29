@@ -78,10 +78,12 @@ exports.getChainInfo = function(req, res, next) {
             console.log("Setting channel");
             const homedir = require('os').homedir();
             var pemOrdererPath = path.join(homedir, 'cacertscomposer', 'admin', 'msp', 'cacerts', 'rca-org1-mplescano-com-7054.pem');
+            var pemPeerPath = path.join(homedir, 'cacertscomposer', 'admin', 'msp', 'cacerts', 'rca-org2-mplescano-com-7054.pem');
             var pemOrderer = fs.readFileSync(pemOrdererPath).toString();
+            var pemPeer = fs.readFileSync(pemPeerPath).toString();
 
             channel = client.newChannel(config.fabric.channelName);
-            peer = client.newPeer(config.fabric.peerRequestURL);
+            peer = client.newPeer(config.fabric.peerRequestURL, {'pem': pemPeer});
             channel.addPeer(peer);
             channel.addOrderer(client.newOrderer(config.fabric.ordererURL, {'pem': pemOrderer}));
         })
@@ -138,15 +140,17 @@ exports.getChainEvents = function(req, res, next) {
                         {console.error("User not defined, or not enrolled - error"); return;}
                         const homedir = require('os').homedir();
                         var pemOrdererPath = path.join(homedir, 'cacertscomposer', 'admin', 'msp', 'cacerts', 'rca-org1-mplescano-com-7054.pem');
+                        var pemPeerPath = path.join(homedir, 'cacertscomposer', 'admin', 'msp', 'cacerts', 'rca-org2-mplescano-com-7054.pem');
                         var pemOrderer = fs.readFileSync(pemOrdererPath).toString();
+                        var pemPeer = fs.readFileSync(pemPeerPath).toString();
 
                         channel = client.newChannel(config.fabric.channelName);
-                        var peer = client.newPeer(config.fabric.peerRequestURL);
+                        var peer = client.newPeer(config.fabric.peerRequestURL, {'pem': pemPeer});
                         channel.addPeer(peer);
                         channel.addOrderer(client.newOrderer(config.fabric.ordererURL, {'pem': pemOrderer})); 
                         // change Admin in following line to admin
-                        var pemPath = path.join(__dirname,'creds','admin-peer-org2-mplescano-com');
-                        var adminPEM = JSON.parse(fs.readFileSync(pemPath)).certificate;
+                        //var pemPath = path.join(__dirname,'creds','admin-peer-org2-mplescano-com');
+                        //var adminPEM = JSON.parse(fs.readFileSync(pemPath)).certificate;
 
                         //var bcEvents = new hfcEH(client);
                         //bcEvents.setPeerAddr(config.fabric.peerEventURL, {pem: adminPEM});
