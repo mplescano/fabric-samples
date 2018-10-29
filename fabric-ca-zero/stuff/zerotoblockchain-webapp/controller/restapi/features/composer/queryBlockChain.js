@@ -41,6 +41,7 @@ var chainEvents = false;
 exports.getChainInfo = function(req, res, next) {
     var channel = {};
     var client = null;
+    var peer = null;
     var wallet_path = path.join(__dirname, 'creds');
     console.log(wallet_path);
     Promise.resolve().then(() => {
@@ -57,6 +58,7 @@ exports.getChainInfo = function(req, res, next) {
         client = new hfc();
         return hfc.newDefaultKeyValueStore({ path: wallet_path })
         .then((wallet) => {
+            console.log("Setting wallet");
             client.setStateStore(wallet);
 
             var crypto_suite = hfc.newCryptoSuite();
@@ -67,35 +69,39 @@ exports.getChainInfo = function(req, res, next) {
             client.setCryptoSuite(crypto_suite);
 
             // change PeerAdmin in following line to adminID
-            return client.getUserContext(config.composer.PeerAdmin, true);})
-            .then((user) => {
-                if (user === null || user === undefined || user.isEnrolled() === false) 
-                    {console.error("User not defined, or not enrolled - error");}
+            return client.getUserContext(config.composer.PeerAdmin, true);
+        })
+        .then((user) => {
+            if (user === null || user === undefined || user.isEnrolled() === false) {
+                console.error("User not defined, or not enrolled - error");
+            }
+            console.log("Setting channel");
+            const homedir = require('os').homedir();
+            var pemOrdererPath = path.join(homedir, 'cacertscomposer', 'admin', 'msp', 'cacerts', 'rca-org1-mplescano-com-7054.pem');
+            var pemOrderer = fs.readFileSync(pemOrdererPath).toString();
 
-                    const homedir = require('os').homedir();
-                    var pemOrdererPath = path.join(homedir, 'cacertscomposer', 'admin', 'msp', 'cacerts', 'rca-org1-mplescano-com-7054.pem');
-                    var pemOrderer = fs.readFileSync(pemOrdererPath).toString();
-
-                    channel = client.newChannel(config.fabric.channelName);
-                    channel.addPeer(client.newPeer(config.fabric.peerRequestURL));
-                    channel.addOrderer(client.newOrderer(config.fabric.ordererURL, {'pem': pemOrderer})); 
-                 })
-                .then(() => {
-                    return channel.queryInfo()
-                    .then((blockchainInfo) => {
-                        if (blockchainInfo) {
-                            res.send({"result": "success", "currentHash": blockchainInfo.currentBlockHash.toString("hex"), blockchain: blockchainInfo});
-                        } else {
-                            console.log('response_payload is null');
-                            res.send({"result": "uncertain", "message": 'response_payload is null'});
-                        }
-                    })
-                    .catch((_err) => {
-                        console.log("queryInfo failed with _err = ", _err);
-                        res.send({"result": "failed", "message": _err.message});
-                    });     
-                });
+            channel = client.newChannel(config.fabric.channelName);
+            peer = client.newPeer(config.fabric.peerRequestURL);
+            channel.addPeer(peer);
+            channel.addOrderer(client.newOrderer(config.fabric.ordererURL, {'pem': pemOrderer}));
+        })
+        .then(() => {
+            console.log("Quering channel");
+            return channel.queryInfo(peer, false)
+            .then((blockchainInfo) => {
+                if (blockchainInfo) {
+                    res.send({"result": "success", "currentHash": blockchainInfo.currentBlockHash.toString("hex"), blockchain: blockchainInfo});
+                } else {
+                    console.log('response_payload is null');
+                    res.send({"result": "uncertain", "message": 'response_payload is null'});
+                }
+            })
+            .catch((_err) => {
+                console.log("queryInfo failed with _err = ", _err);
+                res.send({"result": "failed", "message": _err.message});
+            });     
         });
+    });
 }
 
 /**
