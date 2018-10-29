@@ -97,6 +97,7 @@
     "sleep": "^5.1.1",
     "uuid": "^3.1.0",
     "vcap_services": "^0.3.4",
-    "websocket": "^1.0.24"
+    "websocket": "^1.0.24",
+    "grpc": "^1.6.0"
   }
 }
