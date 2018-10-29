@@ -568,13 +568,14 @@ exports.issueIdentity = function(req, res, next) {
     return businessNetworkConnection.connect(config.composer.adminCard)
     .then(() => {
         console.log('issuing identity for: '+config.composer.NS+'.'+req.body.type+'#'+req.body.id);
-        return businessNetworkConnection.issueIdentity(config.composer.NS + '.' + req.body.type + '#' + req.body.id, req.body.id)
+        return businessNetworkConnection.issueIdentity(config.composer.NS + '.' + req.body.type + '#' + req.body.id, req.body.id, {affiliation: config.composer.affiliation})
         .then((_result) => {
             console.log('result.ID:' + _result.userID);
             console.log('result.userSecret:' + _result.userSecret);
             res.send({'result': 'success', 'userID': _result.userID, 'secret': _result.userSecret});
         })
         .catch((_error) => {
+            console.log('error issuing indentity', _error);
             res.send({'result': 'failed', 'message': _error.message});
         });
 
