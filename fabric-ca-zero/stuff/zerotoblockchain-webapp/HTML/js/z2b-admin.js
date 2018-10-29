@@ -450,7 +450,7 @@ function issueIdentity()
 {
     let options = {};
     let member_list;
-    options.registry = $('#registryName4').find(':selected').text();
+    options.registry = $('#registryName2').find(':selected').text();
     $('#admin-forms').empty();
     $('#messages').empty();
     $('#messages').append(formatMessage('Getting Member List for '+options.registry+'.'));
