@@ -71,9 +71,14 @@ exports.getChainInfo = function(req, res, next) {
             .then((user) => {
                 if (user === null || user === undefined || user.isEnrolled() === false) 
                     {console.error("User not defined, or not enrolled - error");}
+
+                    const homedir = require('os').homedir();
+                    var pemOrdererPath = path.join(homedir, 'cacertscomposer', 'admin', 'msp', 'cacerts', 'rca-org1-mplescano-com-7054.pem');
+                    var pemOrderer = fs.readFileSync(pemOrdererPath).toString();
+
                     channel = client.newChannel(config.fabric.channelName);
                     channel.addPeer(client.newPeer(config.fabric.peerRequestURL));
-                    channel.addOrderer(client.newOrderer(config.fabric.ordererURL)); 
+                    channel.addOrderer(client.newOrderer(config.fabric.ordererURL, {'pem': pemOrderer})); 
                  })
                 .then(() => {
                     return channel.queryInfo()
