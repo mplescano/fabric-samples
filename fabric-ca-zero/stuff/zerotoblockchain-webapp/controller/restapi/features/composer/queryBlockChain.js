@@ -87,7 +87,7 @@ exports.getChainInfo = function(req, res, next) {
         })
         .then(() => {
             console.log("Quering channel");
-            return channel.queryInfo(peer, false)
+            return channel.queryInfo()
             .then((blockchainInfo) => {
                 if (blockchainInfo) {
                     res.send({"result": "success", "currentHash": blockchainInfo.currentBlockHash.toString("hex"), blockchain: blockchainInfo});
