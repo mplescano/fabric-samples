@@ -140,7 +140,11 @@ function listProfiles(_state)
         updatePage('deleteConnectionProfile');
         $('#connection_profiles').on('change',function()
         {
-        // ========> Your Code Goes Here <=========
+            let name = $('#connection_profiles').find(':selected').text();
+            let profile = connection_profiles[name];
+            let _str = displayProfile(profile, name);
+            $('#selected_profile').empty();
+            $('#selected_profile').append(_str);
         });
         let connection_profiles = _profiles[0];
         for (let each in connection_profiles)

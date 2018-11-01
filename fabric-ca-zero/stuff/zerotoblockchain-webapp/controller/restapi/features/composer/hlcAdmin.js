@@ -262,7 +262,14 @@ exports.getAllProfiles = function(req, res, next) {
     // connection in v0.15
     adminConnection.connect(config.composer.adminCard)
     .then(function(){
-        // ========> Your Code Goes Here <=========
+        adminConnection.getAllProfiles()
+            .then((profiles) => {
+                res.send(profiles);
+            })
+            .catch((_error) => {
+                console.log('Network disconnected failed:', _error);
+                res.send(_error);
+            });
     });
 };
 /**
