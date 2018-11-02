@@ -133,7 +133,7 @@ function getProfiles()
  */
 function listProfiles(_state)
 {
-    $.when($.get('/composer/admin/getAllProfiles'), $.get('deleteConnectionProfile.html')).done(function (_profiles, page)
+    /*$.when($.get('/composer/admin/getAllProfiles'), $.get('deleteConnectionProfile.html')).done(function (_profiles, page)
     {
         $('#admin-forms').empty();
         $('#admin-forms').append(page);
@@ -161,7 +161,8 @@ function listProfiles(_state)
         {_submit.on('click', function(){deleteConnectionProfile($('#connection_profiles').find(':selected').text());});}
         else
         {_submit.hide();}
-    });
+    });*/
+    alert('function removed from the api for adminconnection!')
 }
 
 /**
