@@ -46,12 +46,13 @@ function loadBuyerUX ()
 function setupBuyer(page, port)
 {
     // empty the hetml element that will hold this page
-
+    $('#body').empty();
+    $('#body').append(page);
     // update the text on the page using the prompt data for the selected language
     updatePage('buyer');
     msgPort = port.port;
     // connect to the web socket and tell the web socket where to display messages
-
+    wsDisplay('buyer_messages', msgPort);
     // enable the buttons to process an onClick event
 
     // build the buyer select HTML element
