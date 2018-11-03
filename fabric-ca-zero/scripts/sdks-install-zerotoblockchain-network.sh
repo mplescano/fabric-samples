@@ -10,7 +10,7 @@ cp -f /stuff/node_modules.tar.gz $HOME/developer/zerotoblockchain-network
 cd $HOME/developer/zerotoblockchain-network
 gunzip < node_modules.tar.gz | tar -xv
 rm -f node_modules.tar.gz
-#composer archive create --sourceType dir --sourceName . --archiveFile ./tutorial-network.bna
+composer archive create --sourceType dir --sourceName . --archiveFile ~/zerotoblockchain-network.bna
 composer archive create -t dir -n .
 
 if [[ ! -z "${http_proxy}" ]]; then
