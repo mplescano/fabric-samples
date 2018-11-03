@@ -54,16 +54,25 @@ function setupBuyer(page, port)
     // connect to the web socket and tell the web socket where to display messages
     wsDisplay('buyer_messages', msgPort);
     // enable the buttons to process an onClick event
-
+    let _create = $('#newOrder');
+    let _list = $('#orderStatus');
+    let _orderDiv = $('#' + orderDiv);
+    _create.on('click', function() {displayOrderForm();});
+    _list.on('click', function() {listOrders();});
+    $('#buyer').empty();
     // build the buyer select HTML element
     for (let each in buyers)
     {(function(_idx, _arr)
         {$('#buyer').append('<option value="'+_arr[_idx].id+'">' +_arr[_idx].id+'</option>');})(each, buyers);
     }
     // display the name of the current buyer
-
+    $('#company')[0].innerText = buyers[0].companyName;
     // create a function to execute when the user selects a different buyer
-    $('#buyer').on('change', function() { _orderDiv.empty(); $('#buyer_messages').empty(); $('#company')[0].innerText = findMember($('#buyer').find(':selected').text(),buyers).companyName; });
+    $('#buyer').on('change', function() { 
+        _orderDiv.empty(); 
+        $('#buyer_messages').empty(); 
+        $('#company')[0].innerText = findMember($('#buyer').find(':selected').text(),buyers).companyName; 
+    });
 
 }
 /**
@@ -76,13 +85,32 @@ function displayOrderForm()
     // get the order creation web page and also get all of the items that a user can select
     $.when($.get(toLoad), $.get('/composer/client/getItemTable')).done(function (page, _items)
     {
-
+        itemTable = _items[0].items;
+        let _orderDiv = $('#' + orderDiv);
+        _orderDiv.empty();
+        _orderDiv.append(page[0]);
         // update the page with the appropriate text for the selected language
-
+        updatePage('createOrder');
+        $('#seller').empty();
         // populate the seller HTML select object. This string was built during the memberLoad or deferredMemberLoad function call
-
+        $('#seller').append(s_string);
+        $('#seller').val($('#seller option:first').val());
+        $('#orderNo').append('xxx');
+        $('#status').append('New Order');
+        $('#today').append(new Date().toISOString());
+        $('#amount').append('$' + totalAmount + '.00');
         // build a select list for the items
-
+        let _str = '';
+        for (let each in itemTable) {
+            (function (_idx, _arr) {
+                _str += '<option value="' + _idx +'">' + _arr[_idx].itemDescription  + '</option>';
+            })(each, itemTable);
+        }
+        $('#items').empty();
+        $('#items').append(_str);
+        $('#cancelNewOrder').on('click', function() {
+            _orderDiv.empty();
+        });
         // hide the submit new order function until an item has been selected
         $('#submitNewOrder').hide();
         $('#submitNewOrder').on('click', function ()
@@ -91,25 +119,35 @@ function displayOrderForm()
             options.seller = $('#seller').find(':selected').val();
             options.items = newItems;
             console.log(options);
-            _orderDiv.empty(); _orderDiv.append(formatMessage(textPrompts.orderProcess.create_msg));
+            _orderDiv.empty(); 
+            _orderDiv.append(formatMessage(textPrompts.orderProcess.create_msg));
             $.when($.post('/composer/client/addOrder', options)).done(function(_res)
             {    _orderDiv.empty(); _orderDiv.append(formatMessage(_res.result)); console.log(_res);});
         });
         // function to call when an item has been selected
         $('#addItem').on('click', function ()
         { 
+            let _ptr = $('#items').find(':selected').val();
             // remove the just selected item so that it cannot be added twice.
-
+            $('#items').find(':selected').remove();
             // build a new item detail row in the display window
-
+            let _item = itemTable[_ptr];
+            let len = newItems.length;
+            _str = '<tr><td>' + _item.itemNo + '</td><td>' + _item.itemDescription + '</td><td><input type="number" id="count' + len + '"</td><td id="price' + len + '"></td></tr>';
+            $('#itemTable').append(_str);
             // set the initial item count to 1
-
+            $('#count' + len).val(1);
             // set the initial price to the price of one item
-
+            $('#price' + len).append('$' + _item.unitPrice + '.00');
             // add an entry into an array for this newly added item
-
+            let _newItem = _item;
+            _newItem.extendedPrice = _item.unitPrice;
+            newItems[len] = _newItem;
+            newItems[len].quantity = 1;
+            totalAmount += _newItem.extendedPrice;
             // update the order amount with this new item
-
+            $('#amount').empty();
+            $('#amount').append('$' + totalAmount + '.00');
             // function to update item detail row and total amount if itemm count is changed
             $('#count'+len).on('change', function ()
             {let len = this.id.substring(5);
@@ -134,7 +172,7 @@ function listOrders()
 {
     let options = {};
     // get the users email address
-
+    options.id = $('#buyer').find(':selected').text();
     // get their password from the server. This is clearly not something we would do in production, but enables us to demo more easily
     // $.when($.post('/composer/admin/getSecret', options)).done(function(_mem)
     // {
@@ -189,40 +227,50 @@ function formatOrders(_target, _orders)
             r_string = '<br/>'+textPrompts.orderProcess.Dispute.prompt+'<input id="b_reason'+_idx+'" type="text"></input></th>';
             break;
         case orderStatus.Delivered.code:
-
+            _date = _arr[_idx].delivered;
+            _action += '<option value="' + textPrompts.orderProcess.Dispute.select + '">' + textPrompts.orderProcess.Dispute.message + '</option>';
+            r_string = '<br/>' + textPrompts.orderProcess.Dispute.prompt + '<input id="b_reason'+_idx+'" type="text"></input></th>';
         break;
         case orderStatus.Dispute.code:
-
+            _date = _arr[_idx].disputeOpened + '<br/>' + _arr[_idx].dispute;
+            _action += '<option value="' + textPrompts.orderProcess.Resolve.select + '">' + textPrompts.orderProcess.Resolve.message + '</option>';
+            r_string = '<br/>' + textPrompts.orderProcess.Resolve.prompt + '<input id="b_reason' + _idx + '" type="text"></input></th>';
         break;
         case orderStatus.Resolve.code:
-
+            _date = _arr[_idx].disputeResolved + '<br/>'+_arr[_idx].resolve;
+            _action += '<option value="'+textPrompts.orderProcess.AuthorizePayment.select+'">'+textPrompts.orderProcess.AuthorizePayment.message+'</option>';
         break;
         case orderStatus.Created.code:
-
+            _date = _arr[_idx].created;
+            _action += '<option value="'+textPrompts.orderProcess.Purchase.select+'">'+textPrompts.orderProcess.Purchase.message+'</option>'
+            _action += '<option value="'+textPrompts.orderProcess.Cancel.select+'">'+textPrompts.orderProcess.Cancel.message+'</option>'
         break;
         case orderStatus.Backordered.code:
-
+            _date = _arr[_idx].dateBackordered + '<br/>'+_arr[_idx].backorder;
+            _action += '<option value="'+textPrompts.orderProcess.Cancel.select+'">'+textPrompts.orderProcess.Cancel.message+'</option>'
         break;
         case orderStatus.ShipRequest.code:
-
+            _date = _arr[_idx].requestShipment;
         break;
         case orderStatus.Authorize.code:
-
+            _date = _arr[_idx].approved;
         break;
         case orderStatus.Bought.code:
-
+            _date = _arr[_idx].bought;
+            _action += '<option value="'+textPrompts.orderProcess.Cancel.select+'">'+textPrompts.orderProcess.Cancel.message+'</option>'
         break;
         case orderStatus.Delivering.code:
-
+            _date = _arr[_idx].delivering;
         break;
         case orderStatus.Ordered.code:
-
+            _date = _arr[_idx].ordered;
+            _action += '<option value="'+textPrompts.orderProcess.Cancel.select+'">'+textPrompts.orderProcess.Cancel.message+'</option>'
         break;
         case orderStatus.Cancelled.code:
-
+            _date = _arr[_idx].cancelled;
         break;
         case orderStatus.Paid.code:
-
+            _date = _arr[_idx].paid;
         break;
         default:
             break;
