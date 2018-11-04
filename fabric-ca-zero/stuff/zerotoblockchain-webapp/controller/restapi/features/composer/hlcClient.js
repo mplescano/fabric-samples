@@ -16,9 +16,10 @@
 'use strict';
 let fs = require('fs');
 let path = require('path');
+const _home = require('os').homedir();
 const BusinessNetworkConnection = require('composer-client').BusinessNetworkConnection;
 const BusinessNetworkDefinition = require('composer-common').BusinessNetworkDefinition;
-// const config = require('../../../env.json');
+const config = require('../../../env.json');
 const NS = 'org.acme.Z2BTestNetwork';
 let itemTable = null;
 const svc = require('./Z2B_Services');
@@ -43,7 +44,8 @@ exports.getMyOrders = function (req, res, next) {
     let businessNetworkConnection;
     if (svc.m_connection === null) {svc.createMessageSocket();}
     let ser;
-    let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network','dist','zerotoblockchain-network.bna'));
+    //let archiveFile = fs.readFileSync(path.join(path.dirname(require.main.filename),'network','dist','zerotoblockchain-network.bna'));
+    let archiveFile = fs.readFileSync(path.join(_home, config.composer.archiveBnaFile));
     businessNetworkConnection = new BusinessNetworkConnection();
     return BusinessNetworkDefinition.fromArchive(archiveFile)
     .then((bnd) => {
