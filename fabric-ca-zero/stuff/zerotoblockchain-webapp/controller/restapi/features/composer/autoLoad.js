@@ -143,8 +143,7 @@ exports.autoLoad = function(req, res, next) {
                                     _meta.businessNetwork = config.composer.network;
                                     _meta.userName = result.userID;
                                     _meta.enrollmentSecret = result.userSecret;
-                                    var _connectionProfile = JSON.parse(JSON.stringify(config.connectionProfile));
-                                    _connectionProfile.keyValStore = _home + config.connectionProfile.keyValStore;
+                                    let _connectionProfile = JSON.parse(fs.readFileSync(path.join(_home, config.composer.connectionProfileFile)));
                                     let tempCard = new hlc_idCard(_meta, _connectionProfile);
                                     return adminConnection.importCard(result.userID, tempCard)
                                         .then ((_res) => { if (_res) {console.log('card updated');} else {console.log('card imported');} })

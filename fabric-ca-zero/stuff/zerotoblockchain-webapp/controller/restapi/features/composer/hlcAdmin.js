@@ -555,8 +555,7 @@ exports.createCard = function(req, res, next) {
     _meta.businessNetwork = config.composer.network;
     _meta.userName = req.body.id;
     _meta.enrollmentSecret = req.body.secret;
-    var _connectionProfile = JSON.parse(JSON.stringify(config.connectionProfile));
-    _connectionProfile.keyValStore = _home + config.connectionProfile.keyValStore;
+    let _connectionProfile = JSON.parse(fs.readFileSync(path.join(_home, config.composer.connectionProfileFile)));
     let tempCard = new hlc_idCard(_meta, _connectionProfile);
     adminConnection.connect(config.composer.adminCard)
     .then(() => {
