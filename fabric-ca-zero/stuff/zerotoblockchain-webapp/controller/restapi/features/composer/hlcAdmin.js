@@ -550,8 +550,8 @@ exports.checkCard = function(req, res, next) {
 exports.createCard = function(req, res, next) {
     let adminConnection = new AdminConnection();
     let _meta = {};
-    for (let each in config.composer.metaData)
-    {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.composer.metaData); }
+    for (let each in config.metaData)
+    {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.metaData); }
     _meta.businessNetwork = config.composer.network;
     _meta.userName = req.body.id;
     _meta.enrollmentSecret = req.body.secret;

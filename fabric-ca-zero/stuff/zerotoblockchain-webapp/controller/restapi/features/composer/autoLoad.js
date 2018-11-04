@@ -138,8 +138,8 @@ exports.autoLoad = function(req, res, next) {
                                     memberTable.push(_mem);
                                     // svc.saveMemberTable(memberTable);
                                     let _meta = {};
-                                    for (each in config.composer.metaData)
-                                    {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.composer.metaData); }
+                                    for (each in config.metaData)
+                                    {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.metaData); }
                                     _meta.businessNetwork = config.composer.network;
                                     _meta.userName = result.userID;
                                     _meta.enrollmentSecret = result.userSecret;
