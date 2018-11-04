@@ -37,7 +37,7 @@ fi
 CLIENT_AUTH_REQUIRED=false
 
 # true or false
-USE_COUCHDB=false
+USE_COUCHDB=true
 
 #
 # The remainder of this file contains variables which typically would not be changed.
@@ -243,6 +243,8 @@ function initPeerVars {
    NUM=$2
    PEER_HOST=peer${NUM}.${ORG}
    PEER_NAME=peer${NUM}-${ORG_CONTAINER_NAME}
+   CDB_HOST=cdb${NUM}.${ORG}
+   CDB_NAME=cdb${NUM}-${ORG_CONTAINER_NAME}
    PEER_PASS=${PEER_NAME}pw
    PEER_NAME_PASS=${PEER_NAME}:${PEER_PASS}
    PEER_LOGFILE=$LOGDIR/${PEER_NAME}.log

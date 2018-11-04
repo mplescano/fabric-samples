@@ -94,22 +94,21 @@ function writeStartFabric {
 }
 
 function writeCouchDb {
-# TODO
-#  couchdb2:
-#    container_name: couchdb2
-#    image: hyperledger/fabric-couchdb
-    # Populate the COUCHDB_USER and COUCHDB_PASSWORD to set an admin user and password
-    # for CouchDB.  This will prevent CouchDB from operating in an "Admin Party" mode.
-#    environment:
-#      - COUCHDB_USER=
-#      - COUCHDB_PASSWORD=
+# CouchDB per peer in hyperledger even though there is only one organization
     # Comment/Uncomment the port mapping if you want to hide/expose the CouchDB service,
     # for example map it to utilize Fauxton User Interface in dev environments.
 #    ports:
 #      - "7984:5984"
-#    networks:
-#       - byfn
-  echo ""
+   echo "  $CDB_HOST:
+    container_name: $CDB_NAME
+    hostname: $CDB_HOST
+    image: hyperledger/fabric-couchdb
+    environment:
+      - COUCHDB_USER=
+      - COUCHDB_PASSWORD=
+    networks:
+      - $NETWORK
+"
 }
 
 # Write a service to run a fabric test including creating a channel,
@@ -338,7 +337,11 @@ function writePeer {
       echo "      - CORE_PEER_GOSSIP_BOOTSTRAP=peer1.${ORG}:7051"
    fi
    if [[ ! -z "${http_proxy}" ]]; then
-     echo "      - CORE_CHAINCODE_BUILDER=mplescano/fabric-proxied-ccenv:latest"
+      echo "      - CORE_CHAINCODE_BUILDER=mplescano/fabric-proxied-ccenv:latest"
+   fi
+   if [ $USE_COUCHDB == true ]; then
+      echo "      - CORE_LEDGER_STATE_STATEDATABASE=CouchDB"
+      echo "      - CORE_LEDGER_STATE_COUCHDBCONFIG_COUCHDBADDRESS=$CDB_HOST:5984"
    fi
    echo "    working_dir: $MYHOME
     command: /bin/bash -c '/scripts/start-peer.sh 2>&1 | tee /$PEER_LOGFILE; sleep 99999'
@@ -349,8 +352,10 @@ function writePeer {
     networks:
       - $NETWORK
     depends_on:
-      - setup
-"
+      - setup"
+   if [ $USE_COUCHDB == true ]; then
+      echo "      - $CDB_HOST"
+   fi
 }
 
 function writeHeader {
