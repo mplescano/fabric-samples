@@ -58,11 +58,12 @@ function Buy(purchase) {
         purchase.order.seller = purchase.seller;
         purchase.order.bought = new Date().toISOString();
         purchase.order.status = JSON.stringify(orderStatus.Bought);
+
+	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+	        .then(function (assetRegistry) {
+	            return assetRegistry.update(purchase.order);
+	    });
     }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-    });
 }
 
 /**
@@ -79,11 +80,12 @@ function OrderCancel(purchase) {
         purchase.order.seller = purchase.seller;
         purchase.order.cancelled = new Date().toISOString();
         purchase.order.status = JSON.stringify(orderStatus.Cancelled);
+
+	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+	        .then(function (assetRegistry) {
+	            return assetRegistry.update(purchase.order);
+	    });
     }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-    });
 }
 
 /**
@@ -97,11 +99,12 @@ function OrderFromSupplier(purchase) {
         purchase.order.provider = purchase.provider;
         purchase.order.ordered = new Date().toISOString();
         purchase.order.status = JSON.stringify(orderStatus.Ordered);
+
+	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+	        .then(function (assetRegistry) {
+	            return assetRegistry.update(purchase.order);
+	    });
     }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-    });
 }
 /**
  * Record a request to ship by supplier to shipper
@@ -111,14 +114,15 @@ function OrderFromSupplier(purchase) {
 function RequestShipping(purchase) {
     if (purchase.order.status == JSON.stringify(orderStatus.Ordered))
     {
-        purchase.order.shipper == purchase.shipper;
+        purchase.order.shipper = purchase.shipper;
         purchase.order.requestShipment = new Date().toISOString();
         purchase.order.status = JSON.stringify(orderStatus.ShipRequest);
+
+	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+	        .then(function (assetRegistry) {
+	            return assetRegistry.update(purchase.order);
+	    });
     }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-    });
 }
 
 /**
@@ -134,11 +138,12 @@ function Delivering(purchase) {
         var objStatus = orderStatus.Delivering;
         objStatus.text += ' ' + purchase.deliveryStatus;
         purchase.order.status = JSON.stringify(objStatus);
+
+	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+	        .then(function (assetRegistry) {
+	            return assetRegistry.update(purchase.order);
+	    });
     }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-    });
 }
 
 /**
@@ -152,11 +157,12 @@ function Deliver(purchase) {
     {
         purchase.order.delivered = new Date().toISOString();
         purchase.order.status = JSON.stringify(orderStatus.Delivered);
+
+	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+	        .then(function (assetRegistry) {
+	            return assetRegistry.update(purchase.order);
+	    });
     }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-    });
 }
 
  /**
@@ -171,11 +177,12 @@ function RequestPayment(purchase) {
         purchase.order.status = JSON.stringify(orderStatus.PayRequest);
         purchase.order.financeCo = purchase.financeCo;
         purchase.order.paymentRequested = new Date().toISOString();
+
+	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+	        .then(function (assetRegistry) {
+	            return assetRegistry.update(purchase.order);
+	    });
     }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-    });
 }
 
 /**
@@ -189,11 +196,12 @@ function AuthorizePayment(purchase) {
     {
         purchase.order.status = JSON.stringify(orderStatus.Authorize);
         purchase.order.approved = new Date().toISOString();
+
+	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+	        .then(function (assetRegistry) {
+	            return assetRegistry.update(purchase.order);
+	        });
     }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-        });
 }
 
  /**
@@ -206,11 +214,12 @@ function Pay(purchase) {
     {
         purchase.order.status = JSON.stringify(orderStatus.Paid);
         purchase.order.paid = new Date().toISOString();
+
+	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
+	        .then(function (assetRegistry) {
+	            return assetRegistry.update(purchase.order);
+	    });
     }
-    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
-        .then(function (assetRegistry) {
-            return assetRegistry.update(purchase.order);
-    });
 }
 
  /**
@@ -265,6 +274,7 @@ function BackOrder(purchase) {
     purchase.order.status = JSON.stringify(orderStatus.Backordered);
     purchase.order.backorder = purchase.backorder;
     purchase.order.dateBackordered = new Date().toISOString();
+    purchase.order.provider = purchase.provider;
     return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
         .then(function (assetRegistry) {
             return assetRegistry.update(purchase.order);
