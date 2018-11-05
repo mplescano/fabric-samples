@@ -188,9 +188,13 @@ Organizations:"
 #   genesis block for orderer related parameters.
 #
 ################################################################################
-Orderer: &OrdererDefaults
-  OrdererType: solo
-  Addresses:"
+Orderer: &OrdererDefaults"
+   if [ $KAFKA_ORDERING_SERVICE == true ]; then
+     echo "  OrdererType: kafka"
+   else
+     echo "  OrdererType: solo"
+   fi
+   echo "  Addresses:"
    for ORG in $ORDERER_ORGS; do
       local COUNT=1
       while [[ "$COUNT" -le $NUM_ORDERERS ]]; do
@@ -220,10 +224,20 @@ Orderer: &OrdererDefaults
   Kafka:
     # Brokers: A list of Kafka brokers to which the orderer connects
     # NOTE: Use IP:port notation
-    Brokers:
-      - 127.0.0.1:9092
-
-  # Max Channels is the maximum number of channels to allow on the ordering
+    Brokers:"
+   if [ $KAFKA_ORDERING_SERVICE == true ]; then
+     IFS=', ' read -r -a OORGS <<< "$ORDERER_ORGS"
+     initOrdererVars ${OORGS[0]} 1
+     COUNT=1
+     while [[ "$COUNT" -le $NUM_NODES_KAFKA ]]; do
+        initKafkaVars ${OORGS[0]} $COUNT
+        echo "      - $KAFKA_HOST:9092"
+        COUNT=$((COUNT+1))
+     done
+   else
+     echo "      - 127.0.0.1:9092"
+   fi
+   echo "  # Max Channels is the maximum number of channels to allow on the ordering
   # network. When set to 0, this implies no maximum number of channels.
   MaxChannels: 0
 

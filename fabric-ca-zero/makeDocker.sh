@@ -91,6 +91,71 @@ function writeStartFabric {
          done
       done
    fi
+   if [ $KAFKA_ORDERING_SERVICE == true ]; then
+     IFS=', ' read -r -a OORGS <<< "$ORDERER_ORGS"
+     initOrdererVars ${OORGS[0]} 1
+     COUNT=1
+     ZOO_SERVERS=""
+	 DEPENDS_ZOO_SERVERS=""
+     KAFKA_ZOOKEEPER_CONNECT=""
+     while [[ "$COUNT" -le $NUM_NODES_ZOOKEEPER ]]; do
+        initZookeeperVars ${OORGS[0]} $COUNT
+        if [ $COUNT -eq 1 ]; then
+          ZOO_SERVERS="server.$COUNT=$ZOOKEEPER_HOST:2888:3888"
+          KAFKA_ZOOKEEPER_CONNECT="$ZOOKEEPER_HOST:2181"
+		  DEPENDS_ZOO_SERVERS="      - $ZOOKEEPER_HOST"
+        else
+          ZOO_SERVERS="$ZOO_SERVERS server.$COUNT=$ZOOKEEPER_HOST:2888:3888"
+          KAFKA_ZOOKEEPER_CONNECT="$KAFKA_ZOOKEEPER_CONNECT,$ZOOKEEPER_HOST:2181"
+		  DEPENDS_ZOO_SERVERS="$DEPENDS_ZOO_SERVERS\n      - $ZOOKEEPER_HOST"
+        fi
+        COUNT=$((COUNT+1))
+     done
+     COUNT=1
+     while [[ "$COUNT" -le $NUM_NODES_ZOOKEEPER ]]; do
+        initZookeeperVars ${OORGS[0]} $COUNT
+        writeZookeeperNode
+        COUNT=$((COUNT+1))
+     done
+     COUNT=1
+     while [[ "$COUNT" -le $NUM_NODES_KAFKA ]]; do
+        initKafkaVars ${OORGS[0]} $COUNT
+        writeKafkaNode
+        COUNT=$((COUNT+1))
+     done
+   fi
+}
+
+function writeZookeeperNode {
+   #ZOO_MY_ID The id must be unique within the ensemble and should have a value between 1 and 255. 
+   #Do note that this variable will not have any effect if you start the container 
+   #with a /data directory that already contains the myid file.
+   echo "  $ZOOKEEPER_HOST:
+    container_name: $ZOOKEEPER_NAME
+    hostname: $ZOOKEEPER_HOST
+    image: hyperledger/fabric-zookeeper
+    environment:
+      - ZOO_SERVERS=${ZOO_SERVERS}
+      - ZOO_MY_ID=${COUNT}
+    networks:
+      - $NETWORK"
+}
+
+function writeKafkaNode {
+   echo "  $KAFKA_HOST:
+    container_name: $KAFKA_NAME
+    hostname: $KAFKA_HOST
+    image: hyperledger/fabric-kafka
+    environment:
+      - KAFKA_BROKER_ID=${COUNT}
+      - KAFKA_ZOOKEEPER_CONNECT=${KAFKA_ZOOKEEPER_CONNECT}
+      - KAFKA_MESSAGE_MAX_BYTES=${KAFKA_MESSAGE_MAX_BYTES}
+      - KAFKA_REPLICA_FETCH_MAX_BYTES=${KAFKA_REPLICA_FETCH_MAX_BYTES}
+      - KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES=${KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES}
+    networks:
+      - $NETWORK
+    depends_on:"
+    echo -ne $DEPENDS_ZOO_SERVERS
 }
 
 function writeCouchDb {

@@ -29,7 +29,7 @@ function main {
    # Names of the orderer organizations
    ORDERER_ORGS="org1.mplescano.com"
    # Names of the peer organizations
-   PEER_ORGS="org2.mplescano.com"
+   PEER_ORGS="org2.mplescano.com org3.mplescano.com"
 
    # Set ORDERER_PORT_ARGS to the args needed to communicate with the 1st orderer
    IFS=', ' read -r -a OORGS <<< "$ORDERER_ORGS"

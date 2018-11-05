@@ -18,7 +18,7 @@ NETWORKMODE=net_ext_$NETWORK
 ORDERER_ORGS="org1.mplescano.com"
 
 # Names of the peer organizations
-PEER_ORGS="org2.mplescano.com"
+PEER_ORGS="org2.mplescano.com org3.mplescano.com"
 
 # Number of peers in each peer organization
 NUM_PEERS=2
@@ -38,6 +38,20 @@ CLIENT_AUTH_REQUIRED=false
 
 # true or false
 USE_COUCHDB=true
+
+# true or false
+KAFKA_ORDERING_SERVICE=false
+#this is the minimum number of nodes necessary in order to exhibit crash fault tolerance, 
+#i.e. with 4 brokers, you can have 1 broker go down, all channels will continue to be 
+#writeable and readable, and new channels can be created.
+NUM_NODES_KAFKA=4
+KAFKA_MESSAGE_MAX_BYTES=1048576 # 1 * 1024 * 1024 B
+KAFKA_REPLICA_FETCH_MAX_BYTES=1048576 # 1 * 1024 * 1024 B
+KAFKA_REPLICA_FETCH_RESPONSE_MAX_BYTES=1048576 # 1 * 1024 * 1024 B
+#It will either be 3, 5, or 7. It has to be an odd number to avoid split-brain scenarios, 
+#and larger than 1 in order to avoid single point of failures. Anything beyond 7 ZooKeeper 
+#servers is considered an overkill.
+NUM_NODES_ZOOKEEPER=3
 
 #
 # The remainder of this file contains variables which typically would not be changed.
@@ -63,7 +77,7 @@ ORGS=${VAR_TEMP[@]}
 ADMINCERTS=true
 
 # Number of orderer nodes
-NUM_ORDERERS=1
+NUM_ORDERERS=2
 
 # The volume mount to share data between containers
 DATA=data
@@ -118,7 +132,6 @@ RUN_FAIL_FILE=${LOGDIR}/run.fail
 # Set to true to enable use of intermediate CAs
 USE_INTERMEDIATE_CA=false
 
-
 # Config block file path
 CONFIG_BLOCK_FILE=/tmp/config_block.pb
 
@@ -128,7 +141,7 @@ CONFIG_UPDATE_ENVELOPE_FILE=/tmp/config_update_as_envelope.pb
 # initOrgVars <ORG>
 function initOrgVars {
    if [ $# -ne 2 ]; then
-      echo "Usage: initOrgVars <ORG>"
+      echo "Usage: initOrgVars <ORG> <ROL>"
       exit 1
    fi
    ORG=$1
@@ -211,6 +224,24 @@ function initOrdererVars {
    export ORDERER_GENERAL_TLS_PRIVATEKEY=$TLSDIR/server.key
    export ORDERER_GENERAL_TLS_CERTIFICATE=$TLSDIR/server.crt
    export ORDERER_GENERAL_TLS_ROOTCAS=[$CA_CHAINFILE]
+}
+
+function initKafkaVars {
+  if [ $# -ne 2 ]; then
+      echo "Usage: initKafkaVars <ORG> <NUM>"
+      exit 1
+   fi
+   KAFKA_HOST=kafka${NUM}.${ORG}
+   KAFKA_NAME=kafka${NUM}-${ORG_CONTAINER_NAME}
+}
+
+function initZookeeperVars {
+  if [ $# -ne 2 ]; then
+      echo "Usage: initZookeeperVars <ORG> <NUM>"
+      exit 1
+   fi
+   ZOOKEEPER_HOST=zookeeper${NUM}.${ORG}
+   ZOOKEEPER_NAME=zookeeper${NUM}-${ORG_CONTAINER_NAME}
 }
 
 function genClientTLSCert {
