@@ -1,7 +1,7 @@
 {
   "index": {"language": "US English",
-    "title": "Z2B Chapter 6",
-    "header": "Chapter 6: Building the Buyer User Experience",
+    "title": "Z2B Chapter 7",
+    "header": "Chapter 7: Building the Seller User Experience",
     "titleBar": "Zero to Blockchain Tutorial",
     "idx_unified": "load Unified User Experience",
     "idx_buyer": "load Buyer User Experience",
@@ -150,7 +150,7 @@
     "submit": "Submit"
   },
   "seller": {
-    "title": "Seller Chapter 6, Select Seller to see their view: ",
+    "title": "Seller Chapter 7, Select Seller to see their view: ",
     "seller_clear": "Clear Window",
     "sellerOrderStatus": "Display Order Status"
   },

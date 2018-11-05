@@ -135,9 +135,9 @@ function Delivering(purchase) {
         (JSON.parse(purchase.order.status).code == orderStatus.Delivering.code))
     {
         purchase.order.delivering = new Date().toISOString();
-        var objStatus = orderStatus.Delivering;
-        objStatus.text += ' ' + purchase.deliveryStatus;
-        purchase.order.status = JSON.stringify(objStatus);
+        var _status = orderStatus.Delivering;
+        _status.text += ' ' + purchase.deliveryStatus;
+        purchase.order.status = JSON.stringify(_status);
 
 	    return getAssetRegistry('org.acme.Z2BTestNetwork.Order')
 	        .then(function (assetRegistry) {

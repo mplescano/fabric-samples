@@ -33,8 +33,68 @@ rule NetworkAdminSystem {
 * end of V0.14 additions
 */
 
+rule BuyerACLCreate {
+  description: "Enable Buyers to execute all actions on an Order"
+  participant(m): "org.acme.Z2BTestNetwork.Buyer"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.CreateOrder"
+  condition: (v.buyer.buyerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule BuyerACLBuy {
+  description: "Enable Buyers to update an Order from Create to Buy"
+  participant(m): "org.acme.Z2BTestNetwork.Buyer"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.Buy"
+  condition: (v.buyer.buyerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule BuyerACLCancel {
+  description: "Enable Buyers to CANCEL an Order"
+  participant(m): "org.acme.Z2BTestNetwork.Buyer"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.OrderCancel"
+  condition: (v.buyer.buyerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule BuyerACLDispute {
+  description: "Enable Buyers to raise a DISPUTE on an Order"
+  participant(m): "org.acme.Z2BTestNetwork.Buyer"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.Dispute"
+  condition: (v.buyer.buyerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule BuyerACLResolve {
+  description: "Enable Buyers to RESOLVE a DISPUTEd Order"
+  participant(m): "org.acme.Z2BTestNetwork.Buyer"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+  condition: (v.buyer.buyerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule BuyerACLAuthorizePayment {
+  description: "Enable Buyers to AuthorizePayment for an Order"
+  participant(m): "org.acme.Z2BTestNetwork.Buyer"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.AuthorizePayment"
+  condition: (v.buyer.buyerID == m.getIdentifier())
+  action: ALLOW
+}
+
 rule BuyerACL {
-  description: "Allow buyer full access to order"
+  description: "Allow Buyer full access to order"
   participant(m): "org.acme.Z2BTestNetwork.Buyer"
   operation: READ, CREATE, UPDATE, DELETE
   resource(v): "org.acme.Z2BTestNetwork.**"
@@ -42,20 +102,52 @@ rule BuyerACL {
   action: ALLOW
 }
 
-rule BuyerNetAccess {
-  description: "Allow participants access to the network"
-  participant: "org.acme.Z2BTestNetwork.Buyer"
-  operation: READ, CREATE, UPDATE, DELETE
-  resource: "org.hyperledger.composer.system.**"
+rule SellerACLOrderFromSupplier {
+  description: "Enable Sellers to submit an Order to a third party for fulfillment"
+  participant(m): "org.acme.Z2BTestNetwork.Seller"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.OrderFromSupplier"
+  condition: (v.seller.sellerID == m.getIdentifier())
   action: ALLOW
 }
 
+rule SellerACLRequestPayment {
+  description: "Enable Sellers to request payment for a fulfilled Order"
+  participant(m): "org.acme.Z2BTestNetwork.Seller"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.RequestPayment"
+  condition: (v.seller.sellerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule SellerACLResolve {
+  description: "Enable Sellers to resolve a dispute"
+  participant(m): "org.acme.Z2BTestNetwork.Seller"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+  condition: (v.seller.sellerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule SellerACLRefund {
+    description: "Enable a Seller to refund payment for a disputed order"
+    participant(m): "org.acme.Z2BTestNetwork.Seller"
+    operation: READ, CREATE, UPDATE
+    resource(v): "org.acme.Z2BTestNetwork.**"
+    transaction(tx): "org.acme.Z2BTestNetwork.Refund"
+    condition: (v.seller.sellerID == m.getIdentifier())
+    action: ALLOW
+}
+
 rule SellerACL {
-  description: "Allow seller full access to order where they are listed as seller"
+  description: "Allow Seller full access to order where they are listed as seller and the order has been Submitted for Purchase"
   participant(m): "org.acme.Z2BTestNetwork.Seller"
   operation: READ, UPDATE
   resource(v): "org.acme.Z2BTestNetwork.Order"
-  condition: (v.seller.sellerID == m.getIdentifier())
+  condition: ((v.seller.sellerID == m.getIdentifier()) && (v.bought != ''))
   action: ALLOW
 }
 
@@ -67,10 +159,26 @@ rule FinanceCoACL {
   action: ALLOW
 }
 
+rule BuyerNetAccess {
+  description: "Allow participants access to the network"
+  participant: "org.acme.Z2BTestNetwork.Buyer"
+  operation: READ
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule SellerNetAccess {
+  description: "Allow Sellers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Seller"
+  operation: READ
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
 rule ParticipantNetAccess {
   description: "Allow participants access to the network"
   participant: "org.hyperledger.composer.system.Participant"
-  operation: READ, UPDATE
+  operation: READ
   resource: "org.hyperledger.composer.system.**"
   action: ALLOW
 }

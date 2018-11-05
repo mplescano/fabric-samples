@@ -34,9 +34,9 @@ function memberLoad ()
       buyers = _buyers[0].members;
       sellers = _sellers[0].members;
       s_string = _getMembers(sellers);
-      providers = _providers[0].members
+      providers = _providers[0].members;
       p_string = _getMembers(providers);
-      shippers = _shippers[0].members
+      shippers = _shippers[0].members;
       sh_string = _getMembers(shippers);
     });
 }
@@ -61,9 +61,9 @@ function deferredMemberLoad()
       buyers = _buyers[0].members;
       sellers = _sellers[0].members;
       s_string = _getMembers(sellers);
-      providers = _providers[0].members
+      providers = _providers[0].members;
       p_string = _getMembers(providers);
-      shippers = _shippers[0].members
+      shippers = _shippers[0].members;
       sh_string = _getMembers(shippers);
       d_prompts.resolve();
     }).fail(d_prompts.reject);

@@ -49,7 +49,7 @@ app.use(cookieParser(sessionSecret));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.set('appName', 'z2b-chapter05');
+app.set('appName', 'z2b-chapter07');
 app.set('port', appEnv.port);
 
 //app.set('views', path.join(__dirname + '/HTML'));
@@ -88,16 +88,4 @@ function loadSelectedFile(req, res) {
             res.writeHead(200);
             res.end(data);
         });
-}
-
-/**
- * display using console.log the properties of each property in the inbound object
- * @param {displayObjectProperties} _string - string name of object
- * @param {displayObjectProperties}  _object - the object to be parsed
- * @utility
- */
-function displayObjectValues (_string, _object)
-{
-  for (prop in _object){
-      console.log(_string+prop+": "+(((typeof(_object[prop]) == 'object') || (typeof(_object[prop]) == 'function'))  ? typeof(_object[prop]) : _object[prop]));}
 }
