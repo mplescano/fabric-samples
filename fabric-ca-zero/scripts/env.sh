@@ -77,7 +77,7 @@ ORGS=${VAR_TEMP[@]}
 ADMINCERTS=true
 
 # Number of orderer nodes
-NUM_ORDERERS=2
+NUM_ORDERERS=1
 
 # The volume mount to share data between containers
 DATA=data
