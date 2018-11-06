@@ -162,7 +162,7 @@ rule FinanceCoACL {
 rule BuyerNetAccess {
   description: "Allow participants access to the network"
   participant: "org.acme.Z2BTestNetwork.Buyer"
-  operation: READ
+  operation: READ, CREATE, UPDATE, DELETE
   resource: "org.hyperledger.composer.system.**"
   action: ALLOW
 }
@@ -170,7 +170,7 @@ rule BuyerNetAccess {
 rule SellerNetAccess {
   description: "Allow Sellers access to the network"
   participant: "org.acme.Z2BTestNetwork.Seller"
-  operation: READ
+  operation: READ, CREATE, UPDATE, DELETE
   resource: "org.hyperledger.composer.system.**"
   action: ALLOW
 }
