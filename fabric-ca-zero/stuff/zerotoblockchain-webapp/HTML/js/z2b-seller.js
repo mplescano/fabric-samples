@@ -109,7 +109,8 @@ function formatSellerOrders(_target, _orders)
             // ========> Your Code Goes Here <=========
             break;
         case orderStatus.Bought.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].bought;
+            _action += '<option value="' + textPrompts.orderProcess.Order.select + '">' + textPrompts.orderProcess.Order.message + '</option>';
             break;
         case orderStatus.Delivered.code:
             // ========> Your Code Goes Here <=========
