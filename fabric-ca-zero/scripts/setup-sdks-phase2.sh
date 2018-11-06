@@ -241,6 +241,7 @@ function makeConnProfileComposerJson {
    # only the first peer of each org is endorser by convention here :P
    # all the peers can emit events but it is up to client to choose which peer to listening. It's 
    # important to setting at least one eventsource because it impacts the Promise of composer'apis
+   local COUNT_PEER_ORG=1
    for ORG in $PEER_ORGS; do
       local COUNT=1
       while [[ "$COUNT" -le $NUM_PEERS ]]; do
@@ -258,6 +259,10 @@ function makeConnProfileComposerJson {
          fi
          COUNT=$((COUNT+1))
       done
+      if [ "$COUNT_PEER_ORG" -lt $NUM_ALL_PORGS ]; then
+         echo ","
+      fi
+      COUNT_PEER_ORG=$((COUNT_PEER_ORG+1))
    done
    echo "
             }
@@ -355,6 +360,7 @@ function makeConnProfileComposerJson {
     \"orderers\": {
 "
    # Orderes can have diferent CAs
+   local COUNT_ORD_ORG=1
    for ORG in $ORDERER_ORGS; do
       local COUNT=1
       while [[ "$COUNT" -le $NUM_ORDERERS ]]; do
@@ -376,6 +382,10 @@ function makeConnProfileComposerJson {
          fi
          COUNT=$((COUNT+1))
       done
+      if [ "$COUNT_ORD_ORG" -lt $NUM_ALL_OORGS ]; then
+         echo ","
+      fi
+      COUNT_ORD_ORG=$((COUNT_ORD_ORG+1))
    done
 
    echo "
