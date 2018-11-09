@@ -106,38 +106,43 @@ function formatSellerOrders(_target, _orders)
         switch (JSON.parse(_arr[_idx].status).code)
         {
         case orderStatus.PayRequest.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].paymentRequested;
             break;
         case orderStatus.Bought.code:
             _date = _arr[_idx].bought;
             _action += '<option value="' + textPrompts.orderProcess.Order.select + '">' + textPrompts.orderProcess.Order.message + '</option>';
             break;
         case orderStatus.Delivered.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].delivered;
+            _action += '<option value="' + textPrompts.orderProcess.PayRequest.select + '">' + textPrompts.orderProcess.PayRequest.message + '</option>';
             break;
         case orderStatus.ShipRequest.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].requestShipment;
             break;
         case orderStatus.Delivering.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].delivering;
             break;
         case orderStatus.Ordered.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].ordered;
             break;
         case orderStatus.Backordered.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].dateBackordered + '<br/>' + _arr[_idx].backorder;
             break;
         case orderStatus.Dispute.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].disputeOpened + '<br/>' + _arr[_idx].dispute;
+            _action += '<option value="' + textPrompts.orderProcess.Resolve.select + '">' + textPrompts.orderProcess.Resolve.message  + '</option>';
+            _action += '<option value="' + textPrompts.orderProcess.Refund.select + '">' + textPrompts.orderProcess.Refund.message  + '</option>';
+            let _string = '<br/>' + textPrompts.orderProcess.Refund.prompt + '<input id="s_reason' + _idx + '" type="text"></input>';
             break;
         case orderStatus.Resolve.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].disputeResolved + '<br/>' + _arr[_idx].resolve;
+            _action += '<option value="' + textPrompts.orderProcess.PayRequest.select + '">' + textPrompts.orderProcess.PayRequest.message + '</option>';
             break;
         case orderStatus.Cancelled.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].cancelled;
             break;
         case orderStatus.Paid.code:
-            // ========> Your Code Goes Here <=========
+            _date = _arr[_idx].paid;
             break;
         default:
             break;
