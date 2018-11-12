@@ -200,18 +200,18 @@ function makeConnProfileComposerJson {
    echo "{
     \"name\": \"$PEER_ORG Client\",
     \"x-type\": \"hlfv1\",
-    \"x-commitTimeout\": 300,
+    \"x-commitTimeout\": 600,
     \"version\": \"1.0.0\",
     \"client\": {
         \"organization\": \"$PEER_ORG\",
         \"connection\": {
             \"timeout\": {
                 \"peer\": {
-                    \"endorser\": \"300\",
-                    \"eventHub\": \"300\",
-                    \"eventReg\": \"300\"
+                    \"endorser\": \"600\",
+                    \"eventHub\": \"600\",
+                    \"eventReg\": \"600\"
                 },
-                \"orderer\": \"300\"
+                \"orderer\": \"600\"
             }
         }
     },
