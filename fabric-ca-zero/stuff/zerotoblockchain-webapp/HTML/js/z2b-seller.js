@@ -132,7 +132,7 @@ function formatSellerOrders(_target, _orders)
             _date = _arr[_idx].disputeOpened + '<br/>' + _arr[_idx].dispute;
             _action += '<option value="' + textPrompts.orderProcess.Resolve.select + '">' + textPrompts.orderProcess.Resolve.message  + '</option>';
             _action += '<option value="' + textPrompts.orderProcess.Refund.select + '">' + textPrompts.orderProcess.Refund.message  + '</option>';
-            let _string = '<br/>' + textPrompts.orderProcess.Refund.prompt + '<input id="s_reason' + _idx + '" type="text"></input>';
+            //let _string = '<br/>' + textPrompts.orderProcess.Refund.prompt + '<input id="s_reason' + _idx + '" type="text"></input>';
             break;
         case orderStatus.Resolve.code:
             _date = _arr[_idx].disputeResolved + '<br/>' + _arr[_idx].resolve;
@@ -174,7 +174,7 @@ function formatSellerOrders(_target, _orders)
           options.participant = $('#seller').val();
           options.provider = $('#providers'+_idx).find(':selected').val();
           if ((options.action === 'Resolve') || (options.action === 'Refund')) {options.reason = $('#s_reason'+_idx).val();}
-          $('#seller_messages').prepend(formatMessage(options.action+textPrompts.orderProcess.processing_msg.format(options.action, options.orderNo)+options.orderNo));
+          $('#seller_messages').prepend(formatMessage(options.action+textPrompts.orderProcess.processing_msg.format(options.action, options.orderNo)));
           $.when($.post('/composer/client/orderAction', options)).done(function (_results)
           { $('#seller_messages').prepend(formatMessage(_results.result)); });
       });

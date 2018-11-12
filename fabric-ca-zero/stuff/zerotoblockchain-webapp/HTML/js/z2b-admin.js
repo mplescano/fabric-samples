@@ -757,7 +757,7 @@ function getChainEvents()
         csSocket.onopen = function () {csSocket.send('connected to client');};
         csSocket.onmessage = function (message) {
             _blctr ++;
-            if (message.data !== 'connected')
+            if (message.data !== 'connected' && JSON.parse(message.data).header !== undefined)
             {$(content).append('<span class="block">block '+JSON.parse(message.data).header.number+'<br/>Hash: '+JSON.parse(message.data).header.data_hash+'</span>');
                 if (_blctr > 4) {let leftPos = $(content).scrollLeft(); $(content).animate({scrollLeft: leftPos + 300}, 250);}
             }
