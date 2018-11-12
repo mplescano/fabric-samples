@@ -113,6 +113,7 @@ exports.autoLoad = function(req, res, next) {
                         .then((_res) => {
                             console.log('['+_idx+'] member with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
                             svc.m_connection.sendUTF('['+_idx+'] member with id: '+_arr[_idx].id+' already exists in Registry '+config.composer.NS+'.'+_arr[_idx].type);
+                            return issuingIdentity(businessNetworkConnection, _arr, _idx, adminConnection);
                         })
                         .catch((error) => {
                             participant = factory.newResource(config.composer.NS, _arr[_idx].type, _arr[_idx].id);
@@ -123,37 +124,7 @@ exports.autoLoad = function(req, res, next) {
                                 svc.m_connection.sendUTF('['+_idx+'] '+_arr[_idx].companyName+' successfully added');
                             })
                             .then(() => {
-                                // an identity is required before a member can take action in the network.
-                                // V0.14
-                                // return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].pw)
-                                // V0.15
-                                console.log('issuing identity for: '+config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id);
-                                return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].id, {affiliation: config.composer.affiliation})
-                                .then((result) => {
-                                    console.log('_arr[_idx].id: '+_arr[_idx].id);
-                                    console.log('result.userID: '+result.userID);
-                                    let _mem = _arr[_idx];
-                                    _mem.secret = result.userSecret;
-                                    _mem.userID = result.userID;
-                                    memberTable.push(_mem);
-                                    // svc.saveMemberTable(memberTable);
-                                    let _meta = {};
-                                    for (each in config.metaData)
-                                    {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.metaData); }
-                                    _meta.businessNetwork = config.composer.network;
-                                    _meta.userName = result.userID;
-                                    _meta.enrollmentSecret = result.userSecret;
-                                    let _connectionProfile = JSON.parse(fs.readFileSync(path.join(_home, config.composer.connectionProfileFile)));
-                                    let tempCard = new hlc_idCard(_meta, _connectionProfile);
-                                    return adminConnection.importCard(result.userID, tempCard)
-                                        .then ((_res) => { if (_res) {console.log('card updated');} else {console.log('card imported');} })
-                                        .catch((error) => {
-                                            console.error('adminConnection.importCard failed. ',error.message);
-                                        });
-                                })
-                                .catch((error) => {
-                                    console.error('create id for '+_arr[_idx].id+' failed. ',error.message);
-                                });
+                                return issuingIdentity(businessNetworkConnection, _arr, _idx, adminConnection);
                             })
                         .catch((error) => {console.log(_arr[_idx].companyName+' add failed',error.message);});
                         });
@@ -229,6 +200,40 @@ exports.autoLoad = function(req, res, next) {
     .catch((error) => {console.log('error with adminConnect', error.message);});
     res.send({'port': socketAddr});
 };
+
+function issuingIdentity(businessNetworkConnection, _arr, _idx, adminConnection) {
+    // an identity is required before a member can take action in the network.
+    // V0.14
+    // return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].pw)
+    // V0.15
+    console.log('issuing identity for: '+config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id);
+    return businessNetworkConnection.issueIdentity(config.composer.NS+'.'+_arr[_idx].type+'#'+_arr[_idx].id, _arr[_idx].id, {affiliation: config.composer.affiliation})
+    .then((result) => {
+        console.log('_arr[_idx].id: '+_arr[_idx].id);
+        console.log('result.userID: '+result.userID);
+        let _mem = _arr[_idx];
+        _mem.secret = result.userSecret;
+        _mem.userID = result.userID;
+        memberTable.push(_mem);
+        // svc.saveMemberTable(memberTable);
+        let _meta = {};
+        for (each in config.metaData)
+        {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.metaData); }
+        _meta.businessNetwork = config.composer.network;
+        _meta.userName = result.userID;
+        _meta.enrollmentSecret = result.userSecret;
+        let _connectionProfile = JSON.parse(fs.readFileSync(path.join(_home, config.composer.connectionProfileFile)));
+        let tempCard = new hlc_idCard(_meta, _connectionProfile);
+        return adminConnection.importCard(result.userID, tempCard)
+            .then ((_res) => { if (_res) {console.log('card updated');} else {console.log('card imported');} })
+            .catch((error) => {
+                console.error('adminConnection.importCard failed. ',error.message);
+            });
+    })
+    .catch((error) => {
+        console.error('create id for '+_arr[_idx].id+' failed. ',error.message);
+    });
+}
 
 /**
  * get member secret from member table. In normal production, the use would be responsible
