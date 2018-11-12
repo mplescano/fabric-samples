@@ -217,7 +217,7 @@ function issuingIdentity(businessNetworkConnection, _arr, _idx, adminConnection)
         memberTable.push(_mem);
         // svc.saveMemberTable(memberTable);
         let _meta = {};
-        for (each in config.metaData)
+        for (let each in config.metaData)
         {(function(_idx, _obj) {_meta[_idx] = _obj[_idx]; })(each, config.metaData); }
         _meta.businessNetwork = config.composer.network;
         _meta.userName = result.userID;
