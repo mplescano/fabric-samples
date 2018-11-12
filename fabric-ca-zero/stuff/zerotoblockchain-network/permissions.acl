@@ -151,6 +151,65 @@ rule SellerACL {
   action: ALLOW
 }
 
+rule ProviderACLRequestShipping {
+  description: "Enable a Provider to initiate a shipping request for an order"
+  participant(m): "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.RequestShipping"
+  condition: (v.provider.providerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule ProviderACLBackorder {
+  description: "Enable a Provider to issue a backorder status for an order"
+  participant(m): "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.BackOrder"
+  condition: (v.provider.providerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule ProviderACLPayRequest {
+  description: "Enable a Provider to issue a request for payment"
+  participant(m): "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.RequestPayment"
+  condition: (v.provider.providerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule ProviderACLResolve {
+  description: "Enable a Provider to resolve a disputed order"
+  participant(m): "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.Resolve"
+  condition: (v.provider.providerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule ProviderACLRefund {
+  description: "Enable a Provider to refund payment for a disputed order"
+  participant: "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, CREATE, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.**"
+  transaction(tx): "org.acme.Z2BTestNetwork.Refund"
+  condition: (v.provider.providerID == m.getIdentifier())
+  action: ALLOW
+}
+
+rule ProviderACL {
+  description: "Allow Provider read and update access to order where they are listed as seller and the order has been submitted to them to provide (Seller issues OrderFromSupplier transaction)"
+  participant(m): "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.Order"
+  condition: ((v.provider.providerID == m.getIdentifier()) && (v.ordered != ''))
+  action: ALLOW
+}
+
 rule FinanceCoACL {
   description: "Allow FinanceCo full access to all Orders"
   participant: "org.acme.Z2BTestNetwork.FinanceCo"
@@ -172,6 +231,14 @@ rule SellerNetAccess {
   participant: "org.acme.Z2BTestNetwork.Seller"
   operation: READ, CREATE, UPDATE, DELETE
   resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule ProviderNetAccess {
+  description: "Allor Provides access to the network"
+  participant: "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource(r): "org.hyperledger.composer.system.**"
   action: ALLOW
 }
 
