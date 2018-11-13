@@ -210,6 +210,15 @@ rule ProviderACL {
   action: ALLOW
 }
 
+rule ShipperACL {
+  description: "Allow Shipper read, update access to order where they are listed as shipper and the order has been Submitted for delivery"
+  participant(m): "org.acme.Z2BTestNetwork.Shipper"
+  operation: READ, UPDATE
+  resource(v): "org.acme.Z2BTestNetwork.Order"
+  condition: ((v.shipper.shipperID == m.getIdentifier()) && (v.requestShipment != ''))
+  action: ALLOW
+}
+
 rule FinanceCoACL {
   description: "Allow FinanceCo full access to all Orders"
   participant: "org.acme.Z2BTestNetwork.FinanceCo"
@@ -237,6 +246,14 @@ rule SellerNetAccess {
 rule ProviderNetAccess {
   description: "Allor Provides access to the network"
   participant: "org.acme.Z2BTestNetwork.Provider"
+  operation: READ, CREATE, UPDATE, DELETE
+  resource: "org.hyperledger.composer.system.**"
+  action: ALLOW
+}
+
+rule ShipperNetAccess {
+  description: "Allow Shippers access to the network"
+  participant: "org.acme.Z2BTestNetwork.Shipper"
   operation: READ, CREATE, UPDATE, DELETE
   resource: "org.hyperledger.composer.system.**"
   action: ALLOW
