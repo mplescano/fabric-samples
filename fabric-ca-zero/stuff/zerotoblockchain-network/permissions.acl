@@ -238,7 +238,7 @@ rule ProviderNetAccess {
   description: "Allor Provides access to the network"
   participant: "org.acme.Z2BTestNetwork.Provider"
   operation: READ, CREATE, UPDATE, DELETE
-  resource(r): "org.hyperledger.composer.system.**"
+  resource: "org.hyperledger.composer.system.**"
   action: ALLOW
 }
 
